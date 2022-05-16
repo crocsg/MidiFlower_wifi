@@ -48,7 +48,7 @@ CSequence::CSequence (size_t size, uint32_t bpm, uint32_t bpmmulti, uint32_t not
 void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint8_t notechannel)
 {
         
-    if (velocity == 0)
+    if (velocity == 0 || m_tempo == 0)
         return;
     MIDImessage mes;
     mes.type = 0;

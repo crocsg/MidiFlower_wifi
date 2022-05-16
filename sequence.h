@@ -78,7 +78,7 @@ private:
 
     void UpdateTempo ()
     {
-        return;
+        
         uint32_t realbpm = m_bpm * m_bpm_multi;
         if (realbpm > 0)
         {

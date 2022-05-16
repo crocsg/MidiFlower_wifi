@@ -40,9 +40,9 @@ work about biodata sonification
 
 #define LED                         5     // ESP32 Onboard LED (depends on ESP32 board)
 
-#define LOLIN32 1                         // delete this on welleman esp32
+//#define LOLIN32 1                         // delete this on welleman esp32
 #ifdef LOLIN32
-#define FLOWER_SENSOR_PIN          15     // galvanometer input (flower sensor)
+#define FLOWER_SENSOR_PIN          2     // galvanometer input (flower sensor)
 #else
 #define FLOWER_SENSOR_PIN          12     // galvanometer input (flower sensor)
 #endif
@@ -81,7 +81,7 @@ void setup()
   BLEMidiServer.begin(bleserverid);                          // initialize bluetooth midi
   
   // start Serial if you want to debug
-  Serial.begin(115200);                 //initialize Serial for debug
+  //Serial.begin(115200);                 //initialize Serial for debug
 
   // start wifi Access Point
   wifiap_init (chipId);
@@ -89,7 +89,6 @@ void setup()
   // start web server
   webserver_config_init ();
 
-  
   // start music sequencer
   flower_music_init ();
   

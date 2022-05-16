@@ -157,12 +157,21 @@ void handle_Onsettempo()
     server.send(200, "text/html", SendHTML());
 }
 
+void setMul(uint8_t track, uint32_t mul)
+{
+    std::vector<CSequence *> sequences = sequencer.get_tracks();
+    if (track < sequences.size ())
+    {
+        //flower_music_reset ();
+        sequences[track]->setBpmMultiplier (mul);
+    }
+}
 void handle_Onsetmul1()
 {
     String muls = server.pathArg(0);
-    int mul = atoi(muls.c_str());
+    uint32_t mul = atoi(muls.c_str());
     Serial.printf ("set mul 1 =%lu\n", mul);
-    sequencer.get_tracks()[0]->setBpmMultiplier (mul);
+    setMul (0, mul);
     
     server.send(200, "text/html", SendHTML());
 }
@@ -173,7 +182,7 @@ void handle_Onsetmul2()
     int mul = atoi(muls.c_str());
     
     Serial.printf ("set mul 2 =%lu\n", mul);
-    sequencer.get_tracks()[1]->setBpmMultiplier (mul);
+    setMul (1, mul);
     
     server.send(200, "text/html", SendHTML());
 }
@@ -185,7 +194,7 @@ void handle_Onsetmul3()
     
     Serial.printf ("set mul 3 =%lu\n", mul);
 
-    sequencer.get_tracks()[2]->setBpmMultiplier (mul);
+    setMul (2, mul);
     
     server.send(200, "text/html", SendHTML());
 }
@@ -196,7 +205,7 @@ void handle_Onsetmul4()
     int mul = atoi(muls.c_str());
     
     Serial.printf ("set mul 4 =%lu\n", mul);
-    sequencer.get_tracks()[3]->setBpmMultiplier (mul);
+    setMul (3, mul);
     
     server.send(200, "text/html", SendHTML());
 }

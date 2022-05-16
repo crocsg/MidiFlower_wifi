@@ -203,7 +203,11 @@ void    flower_music_set_root (int n)
 }
 void    flower_music_reset ()
 {
-  // todo 
+  std::vector<CSequence *>& psequences = sequencer.get_tracks ();     // get tracks
+  for (auto it = psequences.begin(); it != psequences.end (); ++it)   // walk on tracks
+    (*it)->clear ();                                                  // clear track
+  last_sample_check = millis ();  
+
 }
 
 uint32_t     flower_music_get_basebpm (void)
