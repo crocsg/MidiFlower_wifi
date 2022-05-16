@@ -2,7 +2,7 @@
 BLE Midi music generation from BioSensor data with Web control board
 
 
-This firmware has the same features as [MidiFlower](https://github.com/crocsg/MidiFlower)
+This firmware has the same features as [MidiFlower](https://github.com/crocsg/MidiFlower). But we had a web gui for music generation configuration
 
 This software was after for an hackathon with [Climate Change Lab](https://climatechangelab.org/) and [La Fabrique Janze](https://lafabrique.rafcom.bzh/)
 The purpose of the hackathon was the creation of small artistic installation based on music génération from bio data sensor
