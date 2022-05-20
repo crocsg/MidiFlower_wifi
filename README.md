@@ -2,7 +2,7 @@
 BLE Midi music generation from BioSensor data with Web control board
 
 
-This firmware has the same features as [MidiFlower](https://github.com/crocsg/MidiFlower). But we had a web gui for music generation configuration
+This firmware has the same features as [MidiFlower](https://github.com/crocsg/MidiFlower). But we add a web gui for music generation configuration.
 
 This software was after for an hackathon with [Climate Change Lab](https://climatechangelab.org/) and [La Fabrique Janze](https://lafabrique.rafcom.bzh/)
 The purpose of the hackathon was the creation of small artistic installation based on music génération from bio data sensor
@@ -24,7 +24,7 @@ in wifi parameters.
 with the web gui, you can change
 - Base BPM of generated music
 - Adapt a channel BPM from the base BPM (OFF x1 x2 x4)
-- Choose base scale
+- Choose a scale (Chromatic, Major ...)
 - Choose root scale note
 
 
@@ -33,5 +33,6 @@ with the web gui, you can change
 # Roadmap
 
 - Build a better web GUI
+- Save options on SPIFFS
 
 
