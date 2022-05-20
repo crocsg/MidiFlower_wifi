@@ -53,31 +53,49 @@ uint32_t last_sample_check = millis ();
 CMidiFlowerSequencer sequencer = CMidiFlowerSequencer(MAX_MIDI_NOTES);
 
 // definition des "pistes" midi du tempo associé et du taux de remplissage max
-CSequence midi_track_1 = CSequence(60, BASE_BPM, 1, 70);
-CSequence midi_track_2 = CSequence(120,BASE_BPM, 1, 60);
+CSequence midi_track_1 = CSequence(60, BASE_BPM, 1, 75);
+CSequence midi_track_2 = CSequence(120,BASE_BPM, 1, 75);
 CSequence midi_track_3 = CSequence(120, BASE_BPM, 4, 75);
 CSequence midi_track_4 = CSequence(120, BASE_BPM, 1, 35);
 
 //******************************
 //set scaled values, sorted array, first element scale length
-int scaleMajor[]  = {7,1, 3, 5, 6, 8, 10, 12};
+//int scaleMajor[]  = {7,1, 3, 5, 6, 8, 10, 12};
+int scaleMajor[12]  =    {0,0 ,2,2, 4,4, 5,5, 7,7, 9, 11};        
+int scaleMinor[12]  =     {0,0, 2,2, 3,3, 5,5, 7,7, 8, 10};
+
+int scaleMinorHarmo[12] = {0,0, 2,2, 3,3, 5,5, 7,7, 8, 11};
+int scaleMinorMelo[12] =  {0,0, 2,2, 3,3, 5,5, 7,7, 9, 11};
+int scalePentaMajor[12] =  {0,0, 2,2, 4,4, 7,7,7, 9,9,9};
+int scalePentaMinor[12] =  {0,0, 3,3, 5,5, 7,7,7, 10,10,10};
+int scaleBlues[12] =      {0,0, 3,3, 5,5, 6,6, 7,7, 10,10};
+
+int scaleChrom[12] =      {0,1,2,3,4,5,6,7,8,9,10,11};
+
+//int scaleMajorD[]  = {2,2 ,4,4, 6,6, 7,7, 9,9, 11, 13};
+//int scaleMajorE[]  = {4,4 ,6,6, 8,8, 9,9, 11,11, 13, 14};
+
 int scaleDiaMinor[]  = {7,1, 3, 4, 6, 8, 9, 11};
 int scaleIndian[]  = {7,1, 2, 2, 5, 6, 9, 11};
-int scaleMinor[]  = {7,1, 3, 4, 6, 8, 9, 11};
-int scaleChrom[] = {12,1,2,3,4,5,6,7,8,9,10,11,12};
+//int scaleMinor[]  = {7,1, 3, 4, 6, 8, 9, 11};
 
-char* scalename[] = 
+
+
+const char* scalename[] = 
 {
-  "Majeur",
-  "Diatonique Mineure",
-  "Indienne",
-  "Mineur",
-  "Chromatique"
+  "Major",
+  "Minor",
+  "Minor Harmonic",
+  "Minor Melodic",
+  "Pentatonic Major",
+  "Pentatonic Minor",
+  "Blues"
+  "Chromatic"
 };
 
 int *scaleSelect = scaleMajor; //initialize scaling
 int current_scale = 0;
-int root = 0;       //initialize for root
+int root = 4;       //initialize for root
 int noteMin = 36;   //C2  - keyboard note minimum
 int noteMax = 96;   //C7  - keyboard note maximum
 
@@ -108,8 +126,8 @@ void BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, u
      
 
     //set scaling, root key, note
-    int note = map(averg%127,1,127,noteMin,noteMax);    //derive note from average measure
-    note = scaleNote(note, scaleSelect, root);          //scale the note (force the note in selected scale)
+    int note = map(averg%127,0,127,noteMin,noteMax);    //derive note from average measure
+    //note = scaleNote(note, scaleSelect, root);          //scale the note (force the note in selected scale)
     
     setNote(currentmillis, note, 100, dur);                            // add the note in some sequencer channels
 }
@@ -128,6 +146,7 @@ int scaleSearch(int note, int scale[], int scalesize)
 
 int scaleNote(int note, int scale[], int root) 
 {
+  #if 0
   //input note mod 12 for scaling, note/12 octave
   //search array for nearest note, return scaled*octave
   int scaled = note%12;
@@ -136,6 +155,12 @@ int scaleNote(int note, int scale[], int root)
   //search entire array and return closest scaled note
   scaled = scaleSearch(scaled, scale, scalesize);
   scaled = (scaled + (12 * octave)) + root; //apply octave and root
+  #else
+  int scaled = note%12;
+  int octave = note/12;
+  scaled = scaleSelect[scaled];
+  scaled = (scaled + (12 * octave)) + root; //apply octave and root
+  #endif
   return scaled;
 }
 
@@ -231,6 +256,8 @@ uint8_t flower_music_get_scale (void)
   return current_scale;
 }
 
+
+
 void flower_music_set_scale (uint8_t scale)
 {
   current_scale = scale;
@@ -241,25 +268,34 @@ void flower_music_set_scale (uint8_t scale)
       scaleSelect = scaleMajor;
       break;
     case 1:
-      scaleSelect = scaleDiaMinor;
+      scaleSelect = scaleMinor;
       break;      
     case 2:
-      scaleSelect = scaleIndian;
+      scaleSelect = scaleMinorHarmo;
       break;      
     case 3:
-      scaleSelect = scaleMinor;
+      scaleSelect = scaleMinorMelo;
       break;            
     case 4:
-      scaleSelect = scaleChrom;
+      scaleSelect = scalePentaMajor;
       break;     
+    case 5:
+      scaleSelect = scalePentaMinor;
+      break;       
+    case 6:
+      scaleSelect = scaleBlues;
+      break;         
+    case 7:
+      scaleSelect = scaleChrom;
+      break;        
     default:
       scaleSelect = scaleMajor;
-      break;       
+      break;           
 
   }
 }
 
-char** flower_music_get_scale_name (void)
+const char** flower_music_get_scale_name (void)
 {
   return scalename;
 }
@@ -269,3 +305,12 @@ uint8_t flower_music_get_scale_name_nbr (void)
   return ARRAYLEN(scalename);
 }
 
+int* flower_music_get_current_scale (void)
+{
+  return scaleSelect;
+}
+
+int flower_music_get_current_root (void)
+{
+  return (root);
+}

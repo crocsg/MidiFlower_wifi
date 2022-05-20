@@ -132,7 +132,7 @@ void handle_Onsetroot()
     String root = server.pathArg(0);
     int newroot = atoi(root.c_str());
     flower_music_set_root(newroot);
-    flower_music_reset ();
+    //flower_music_reset ();
 
     server.send(200, "text/html", SendHTML());
 }
@@ -142,7 +142,7 @@ void handle_Onsetscale()
     String scales = server.pathArg(0);
     int newscale = atoi(scales.c_str());
     flower_music_set_scale(newscale);
-    flower_music_reset ();
+    //flower_music_reset ();
 
     server.send(200, "text/html", SendHTML());
 }
@@ -235,11 +235,11 @@ String SendHTML(void)
     ptr += "<body>\n";
     ptr += "<h1>MIDI Flower Control</h1>\n";
 
-    ptr += "<h1>Octaves</h1>\n";
+    
 
-    ptr += "<h1>Gamme</h1>\n";
+    ptr += "<h1>Scale</h1>\n";
     int scalenbr = flower_music_get_scale_name_nbr();
-    char **scalenames = flower_music_get_scale_name();
+    const char **scalenames = flower_music_get_scale_name();
     int cur_scale = flower_music_get_scale ();
 
     for (uint8_t n = 0; n < scalenbr; n++)
@@ -298,7 +298,7 @@ String SendHTML(void)
         {
             ptr += "<a class=\"button button-on\" href=\"/setmul1=";
             ptr += std::to_string(notemul[n]).c_str();
-            ptr += "\">X ";
+            ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
             ptr += "</a>\n";
         }
@@ -321,7 +321,8 @@ String SendHTML(void)
         {
             ptr += "<a class=\"button button-on\" href=\"/setmul2=";
             ptr += std::to_string(notemul[n]).c_str();
-            ptr += "\">X ";
+            
+            ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
             ptr += "</a>\n";
         }
@@ -345,7 +346,7 @@ String SendHTML(void)
         {
             ptr += "<a class=\"button button-on\" href=\"/setmul3=";
             ptr += std::to_string(notemul[n]).c_str();
-            ptr += "\">X ";
+            ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
             ptr += "</a>\n";
         }
@@ -368,12 +369,12 @@ String SendHTML(void)
         {
             ptr += "<a class=\"button button-on\" href=\"/setmul4=";
             ptr += std::to_string(notemul[n]).c_str();
-            ptr += "\">X ";
+            ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
             ptr += "</a>\n";
         }
     }
-    ptr += "<h1>Note Fondamentale</h1>\n";
+    ptr += "<h1>Tone</h1>\n";
 
     int root = flower_music_get_root();
     for (uint8_t n = 0; n < ARRAYLEN(midinotes); n++)
@@ -399,17 +400,7 @@ String SendHTML(void)
         }
     }
 
-#if 0
-   if(led1stat)
-  {}
-  else
-  {ptr +="<p>LED1 Status: OFF</p><a class=\"button button-on\" href=\"/led1on\">ON</a>\n";}
 
-  if(led2stat)
-  {ptr +="<p>LED2 Status: ON</p><a class=\"button button-off\" href=\"/led2off\">OFF</a>\n";}
-  else
-  {ptr +="<p>LED2 Status: OFF</p><a class=\"button button-on\" href=\"/led2on\">ON</a>\n";}
-#endif
     ptr += "</body>\n";
     ptr += "</html>\n";
     return ptr;

@@ -29,6 +29,7 @@ work about biodata sonification
 
 #include "MidiFlowerSequencer.h"
 #include "webserver_config.h"
+#include "flower_music.h"
 
 #define MIN_TIME_MS_BETWEEN_NOTE   (20)
 
@@ -47,6 +48,7 @@ void CMidiFlowerSequencer::Loop(void)
             if (m_ptracks[m_sequence_index]->play(currentMillis, &note) == 1)
             {
                 //Serial.printf ("play seq=%d milli=%lu\n", m_sequence_index, currentMillis);
+                note.value = scaleNote(note.value, flower_music_get_current_scale(), flower_music_get_current_root ());
                 Play(currentMillis, &note);
             }
         }

@@ -34,20 +34,22 @@ work about biodata sonification
 #include "MidiFlowerSequencer.h"
 #include "sequence.h"
 
-void        BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
-int         scaleSearch(int note, int scale[], int scalesize);
-int         scaleNote(int note, int scale[], int root);
-void        setNote(uint32_t currentMillis, int value, int velocity, long duration);
-void        ControlMusic (void);
-void        flower_music_init (void);
-int         flower_music_get_root (void);
-void        flower_music_set_root (int root);
-uint32_t    flower_music_get_basebpm (void);
-void        flower_music_set_basebpm (uint32_t bpm);
-void        flower_music_reset (void);
-uint8_t     flower_music_get_scale (void);
-void        flower_music_set_scale (uint8_t scale);
-char**      flower_music_get_scale_name (void);
-uint8_t     flower_music_get_scale_name_nbr (void);
+void            BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
+int             scaleSearch(int note, int scale[], int scalesize);
+int             scaleNote(int note, int scale[], int root);
+void            setNote(uint32_t currentMillis, int value, int velocity, long duration);
+void            ControlMusic (void);
+void            flower_music_init (void);
+int             flower_music_get_root (void);
+void            flower_music_set_root (int root);
+uint32_t        flower_music_get_basebpm (void);
+void            flower_music_set_basebpm (uint32_t bpm);
+void            flower_music_reset (void);
+uint8_t         flower_music_get_scale (void);
+void            flower_music_set_scale (uint8_t scale);
+const char**    flower_music_get_scale_name (void);
+uint8_t         flower_music_get_scale_name_nbr (void);
+int*            flower_music_get_current_scale (void);
+int             flower_music_get_current_root (void);
 
 #endif

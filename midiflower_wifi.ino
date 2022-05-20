@@ -40,7 +40,7 @@ work about biodata sonification
 
 #define LED                         5     // ESP32 Onboard LED (depends on ESP32 board)
 
-//#define LOLIN32 1                         // delete this on welleman esp32
+#define LOLIN32 1                         // delete this on welleman esp32
 #ifdef LOLIN32
 #define FLOWER_SENSOR_PIN          2     // galvanometer input (flower sensor)
 #else
