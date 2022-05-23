@@ -36,6 +36,7 @@ public:
     {
         m_previousMillis = 0;
         m_sequence_time = 0;
+        m_lock = false;
     }
 
     void Loop (void);
@@ -60,6 +61,20 @@ public:
         return (m_ptracks[track]->getnbnotes ());
     }
 
+    uint32_t get_track_mulbpm (uint8_t track)
+    {
+        if (track >= m_ptracks.size())
+            return (0);
+        return (m_ptracks[track]->getBpmMultiplier());            
+    }
+
+    void set_track_mulbpm (uint8_t track, uint32_t mul)
+    {
+        if (track >= m_ptracks.size())
+            return;
+        m_ptracks[track]->setBpmMultiplier(mul);            
+    }
+
     size_t get_track_size (uint8_t track)
     {
         if (track >= m_ptracks.size())
@@ -74,6 +89,7 @@ public:
         m_ptracks[track]->addNote (time, value, velocity, duration, notechannel);
     }
 
+    void setLock (bool lock) { m_lock = lock;}
     
 private:
     std::vector<CSequence *> m_ptracks;
@@ -81,5 +97,6 @@ private:
     uint32_t m_sequence_time;
     uint16_t m_sequence_index;
     uint32_t m_previousMillis;
+    bool     m_lock;
 };
 #endif // __MIDIFLOWERSEQUENCER_H

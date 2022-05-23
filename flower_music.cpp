@@ -53,32 +53,24 @@ uint32_t last_sample_check = millis ();
 CMidiFlowerSequencer sequencer = CMidiFlowerSequencer(MAX_MIDI_NOTES);
 
 // definition des "pistes" midi du tempo associé et du taux de remplissage max
+// define tracks with associated BPM and fill ratio
 CSequence midi_track_1 = CSequence(60, BASE_BPM, 1, 75);
 CSequence midi_track_2 = CSequence(120,BASE_BPM, 1, 75);
 CSequence midi_track_3 = CSequence(120, BASE_BPM, 4, 75);
 CSequence midi_track_4 = CSequence(120, BASE_BPM, 1, 35);
 
 //******************************
-//set scaled values, sorted array, first element scale length
-//int scaleMajor[]  = {7,1, 3, 5, 6, 8, 10, 12};
-int scaleMajor[12]  =    {0,0 ,2,2, 4,4, 5,5, 7,7, 9, 11};        
-int scaleMinor[12]  =     {0,0, 2,2, 3,3, 5,5, 7,7, 8, 10};
+// define scale for music style
+uint8_t scaleMajor[FLOWER_MUSIC_SCALE_SIZE]  =       {0,0 ,2,2, 4,4, 5,5, 7,7, 9, 11};        
+uint8_t scaleMinor[FLOWER_MUSIC_SCALE_SIZE]  =       {0,0, 2,2, 3,3, 5,5, 7,7, 8, 10};
 
-int scaleMinorHarmo[12] = {0,0, 2,2, 3,3, 5,5, 7,7, 8, 11};
-int scaleMinorMelo[12] =  {0,0, 2,2, 3,3, 5,5, 7,7, 9, 11};
-int scalePentaMajor[12] =  {0,0, 2,2, 4,4, 7,7,7, 9,9,9};
-int scalePentaMinor[12] =  {0,0, 3,3, 5,5, 7,7,7, 10,10,10};
-int scaleBlues[12] =      {0,0, 3,3, 5,5, 6,6, 7,7, 10,10};
+uint8_t scaleMinorHarmo[FLOWER_MUSIC_SCALE_SIZE] =   {0,0, 2,2, 3,3, 5,5, 7,7, 8, 11};
+uint8_t scaleMinorMelo[FLOWER_MUSIC_SCALE_SIZE] =    {0,0, 2,2, 3,3, 5,5, 7,7, 9, 11};
+uint8_t scalePentaMajor[FLOWER_MUSIC_SCALE_SIZE] =   {0,0, 2,2, 4,4, 7,7,7, 9,9,9};
+uint8_t scalePentaMinor[FLOWER_MUSIC_SCALE_SIZE] =   {0,0, 3,3, 5,5, 7,7,7, 10,10,10};
+uint8_t scaleBlues[FLOWER_MUSIC_SCALE_SIZE] =        {0,0, 3,3, 5,5, 6,6, 7,7, 10,10};
 
-int scaleChrom[12] =      {0,1,2,3,4,5,6,7,8,9,10,11};
-
-//int scaleMajorD[]  = {2,2 ,4,4, 6,6, 7,7, 9,9, 11, 13};
-//int scaleMajorE[]  = {4,4 ,6,6, 8,8, 9,9, 11,11, 13, 14};
-
-int scaleDiaMinor[]  = {7,1, 3, 4, 6, 8, 9, 11};
-int scaleIndian[]  = {7,1, 2, 2, 5, 6, 9, 11};
-//int scaleMinor[]  = {7,1, 3, 4, 6, 8, 9, 11};
-
+uint8_t scaleChrom[FLOWER_MUSIC_SCALE_SIZE] =        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
 
 const char* scalename[] = 
@@ -93,11 +85,11 @@ const char* scalename[] =
   "Chromatic"
 };
 
-int *scaleSelect = scaleMajor; //initialize scaling
-int current_scale = 0;
+uint8_t *scaleSelect = scaleMajor; //initialize scaling
+uint8_t current_scale = 0;
 int root = 4;       //initialize for root
-int noteMin = 36;   //C2  - keyboard note minimum
-int noteMax = 96;   //C7  - keyboard note maximum
+uint8_t noteMin = 24;   //C1  - keyboard note minimum
+uint8_t noteMax = 84;   //C6  - keyboard note maximum
 
 uint32_t basebpm   = BASE_BPM;
 
@@ -122,7 +114,7 @@ void flower_music_init (void)
 void BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
 {
     int dur = 200+(map(delta%127,1,127,100,2000));      //length of note derived from delta
-    int ramp = 3 + (dur%100) ; //control slide rate, min 25 (or 3 ;)
+    int ramp = 3 + (dur%80) ; //control slide rate, min 25 (or 3 ;)
      
 
     //set scaling, root key, note
@@ -132,35 +124,17 @@ void BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, u
     setNote(currentmillis, note, 100, dur);                            // add the note in some sequencer channels
 }
 
-int scaleSearch(int note, int scale[], int scalesize) 
-{
- for(uint8_t i=1;i<scalesize;i++) {
-  if(note == scale[i]) { return note; }
-  else { if(note < scale[i]) { return scale[i]; } } //highest scale value less than or equal to note
-  //otherwise continue search
- }
- //didn't find note and didn't pass note value, uh oh!
- return 6;//give arbitrary value rather than fail
-}
 
 
-int scaleNote(int note, int scale[], int root) 
+
+int scaleNote(int note, uint8_t scale[], int root) 
 {
-  #if 0
-  //input note mod 12 for scaling, note/12 octave
-  //search array for nearest note, return scaled*octave
-  int scaled = note%12;
-  int octave = note/12;
-  int scalesize = (scale[0]);
-  //search entire array and return closest scaled note
-  scaled = scaleSearch(scaled, scale, scalesize);
-  scaled = (scaled + (12 * octave)) + root; //apply octave and root
-  #else
-  int scaled = note%12;
-  int octave = note/12;
+  
+  int scaled = note % FLOWER_MUSIC_SCALE_SIZE;
+  int octave = note / FLOWER_MUSIC_SCALE_SIZE;
   scaled = scaleSelect[scaled];
-  scaled = (scaled + (12 * octave)) + root; //apply octave and root
-  #endif
+  scaled = (scaled + (FLOWER_MUSIC_SCALE_SIZE * octave)) + root; //apply octave and root
+  
   return scaled;
 }
 
@@ -305,7 +279,7 @@ uint8_t flower_music_get_scale_name_nbr (void)
   return ARRAYLEN(scalename);
 }
 
-int* flower_music_get_current_scale (void)
+uint8_t* flower_music_get_current_scale (void)
 {
   return scaleSelect;
 }

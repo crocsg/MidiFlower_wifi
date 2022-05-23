@@ -98,6 +98,9 @@ void setup()
 
   // define a function to get measures
   flower_sensor_set_callback (flowersensor_measure);
+
+  // enable sequencer
+  sequencer.setLock(false);
 }
 
 // 

@@ -35,6 +35,7 @@ work about biodata sonification
 #include "flower_music.h"
 #include "wifiap.h"
 #include "util.h"
+#include "config.h"
 
 #define HTTP_PORT 80
 #define DNS_PORT 53
@@ -55,7 +56,11 @@ void handle_Onsetmul2();
 void handle_Onsetmul3();
 void handle_Onsetmul4();
 void handle_NotFound();
+void handle_OntestScale();
+void handle_OnPlay();
+
 String SendHTML(void);
+String TestPage (void);
 
 const char *midinotes[] =
     {
@@ -108,6 +113,9 @@ void webserver_config_init(void)
     server.on(UriBraces("/setmul3={}"), handle_Onsetmul3);   // set time multiplier
     server.on(UriBraces("/setmul4={}"), handle_Onsetmul4);   // set time multiplier
 
+    server.on("/testscale", handle_OntestScale);   // display testScale page
+    server.on(UriBraces("/play={}"), handle_OnPlay);   // display testScale page
+
     server.onNotFound(handle_NotFound);                      // handle 404 error
     server.begin();
 
@@ -123,9 +131,30 @@ void webserver_handle_event(void)
 
 void handle_OnHome()
 {
+    sequencer.setLock(false);
     Serial.printf("Web server Home page request\n");
     server.send(200, "text/html", SendHTML());
 }
+
+void handle_OntestScale()
+{
+    sequencer.setLock(true);
+    Serial.printf("Web server Test scale page request\n");
+    server.send(200, "text/html", TestPage());
+}
+
+void handle_OnPlay()
+{
+    String snote = server.pathArg(0);
+    uint8_t note = (uint8_t) atoi(snote.c_str());
+    
+    note = note + 48; // note derived from C3
+    //flower_music_reset ();
+    sequencer.midiSerial(144, 1, note, 100);
+
+    server.send(200, "text/html", TestPage());
+}
+
 
 void handle_Onsetroot()
 {
@@ -133,7 +162,7 @@ void handle_Onsetroot()
     int newroot = atoi(root.c_str());
     flower_music_set_root(newroot);
     //flower_music_reset ();
-
+    config_save ();
     server.send(200, "text/html", SendHTML());
 }
 
@@ -142,7 +171,7 @@ void handle_Onsetscale()
     String scales = server.pathArg(0);
     int newscale = atoi(scales.c_str());
     flower_music_set_scale(newscale);
-    //flower_music_reset ();
+    config_save ();
 
     server.send(200, "text/html", SendHTML());
 }
@@ -151,7 +180,7 @@ void handle_Onsettempo()
     String bpms = server.pathArg(0);
     int bpm = atoi(bpms.c_str());
     flower_music_set_basebpm(bpm);
-    
+    config_save ();
     
 
     server.send(200, "text/html", SendHTML());
@@ -165,6 +194,7 @@ void setMul(uint8_t track, uint32_t mul)
         //flower_music_reset ();
         sequences[track]->setBpmMultiplier (mul);
     }
+    config_save ();
 }
 void handle_Onsetmul1()
 {
@@ -227,7 +257,7 @@ String SendHTML(void)
     ptr += ".button {display: block;width: 120px;background-color: #3498db;border: none;color: white;padding: 13px 30px;text-decoration: none;font-size: 20px;margin: 0px auto 35px;cursor: pointer;border-radius: 8px;}\n";
     ptr += ".button-on {background-color: #3498db;}\n";
     ptr += ".button-on:active {background-color: #2980b9;}\n";
-    ptr += ".button-off {background-color: #34d098;}\n";
+    ptr += ".button-off {background-color: #34387b;}\n";
     ptr += ".button-off:active {background-color: #2c3e50;}\n";
     ptr += "p {font-size: 14px;color: #888;margin-bottom: 12px;}\n";
     ptr += "</style>\n";
@@ -247,15 +277,15 @@ String SendHTML(void)
         Serial.printf ("Scale name %s\n", scalenames[n]);
         if (n == cur_scale)
         {
-            ptr += "<a class=\"button button-off\" href=\"/\">";
+            ptr += "<a class=\"button button-on\" href=\"/\">";
             ptr += scalenames[n];
             ptr += "</a>\n";                 
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setscale=";
+            ptr += "<a class=\"button button-off\" href=\"/setscale=";
             ptr += std::to_string(n).c_str();
-            ptr += "\">Utiliser ";
+            ptr += "\">";
             ptr += scalenames[n];
             ptr += "</a>\n";
         }
@@ -400,8 +430,63 @@ String SendHTML(void)
         }
     }
 
+    // back to home page
+    ptr += "<a href=\"/testscale\">Scale Test</a>";
 
     ptr += "</body>\n";
     ptr += "</html>\n";
+    return ptr;
+}
+
+String TestPage (void)
+{
+    String ptr = "<!DOCTYPE html> <html>\n";
+    ptr += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n";
+    ptr += "<title>MIDI Flower Control</title>\n";
+    ptr += "<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}\n";
+    ptr += "body{margin-top: 50px;} h1 {color: #444444;margin: 50px auto 30px;} h3 {color: #444444;margin-bottom: 50px;}\n";
+    ptr += ".button {display: block;width: 120px;background-color: #3498db;border: none;color: white;padding: 13px 30px;text-decoration: none;font-size: 20px;margin: 0px auto 35px;cursor: pointer;border-radius: 8px;}\n";
+    ptr += ".button-on {background-color: #3498db;}\n";
+    ptr += ".button-on:active {background-color: #2980b9;}\n";
+    ptr += ".button-off {background-color: #34387b;}\n";
+    ptr += ".button-off:active {background-color: #2c3e50;}\n";
+    ptr += "p {font-size: 14px;color: #888;margin-bottom: 12px;}\n";
+    ptr += "</style>\n";
+    ptr += "</head>\n";
+    ptr += "<body>\n";
+    ptr += "<h1>MIDI Flower Control</h1>\n";
+
+    
+
+    ptr += "<h1>Test Scale</h1>\n";
+    int scalenbr = flower_music_get_scale_name_nbr();
+    const char **scalenames = flower_music_get_scale_name();
+    int cur_scale = flower_music_get_scale ();
+    uint8_t *cur_scaleptr = flower_music_get_current_scale ();
+    int root = flower_music_get_current_root ();
+    ptr += "<h2>Current Scale</h2>";
+    ptr += "<h2>";
+    ptr += scalenames[cur_scale];
+    ptr += "</h2>";
+
+    uint16_t note = 0xFFFF;
+    for (uint8_t i = 0; i < ARRAYLEN(midinotes); i++)
+    {
+        if (note != cur_scaleptr[i])
+        {
+            note = cur_scaleptr[i];
+            ptr += "<a class=\"button button-on\" href=\"/play=";
+            ptr += std::to_string(note + root).c_str();
+            ptr += "\">";
+            ptr += midinotes[(note + root) % ARRAYLEN(midinotes)];
+            ptr += "</a>\n";
+        }
+    }
+
+    // back to home page
+    ptr += "<a href=\"/\">Home</a>";
+    ptr += "</body>\n";
+    ptr += "</html>\n";
+
     return ptr;
 }

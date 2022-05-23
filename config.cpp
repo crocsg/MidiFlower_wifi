@@ -27,30 +27,48 @@ This project is based on https://github.com/electricityforprogress/MIDIsprout gr
 work about biodata sonification
 */
 
+#include "config.h"
+#include <ArduinoJson.h>
 
-#ifndef __FLOWER_MUSIC_H
-#define __FLOWER_MUSIC_H
-
+#include "flower_music.h"
 #include "MidiFlowerSequencer.h"
-#include "sequence.h"
 
-#define FLOWER_MUSIC_SCALE_SIZE 12
+#define JSON_MAX_SIZE 1024
 
-void            BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
-int             scaleNote(int note, uint8_t scale[], int root);
-void            setNote(uint32_t currentMillis, int value, int velocity, long duration);
-void            ControlMusic (void);
-void            flower_music_init (void);
-int             flower_music_get_root (void);
-void            flower_music_set_root (int root);
-uint32_t        flower_music_get_basebpm (void);
-void            flower_music_set_basebpm (uint32_t bpm);
-void            flower_music_reset (void);
-uint8_t         flower_music_get_scale (void);
-void            flower_music_set_scale (uint8_t scale);
-const char**    flower_music_get_scale_name (void);
-uint8_t         flower_music_get_scale_name_nbr (void);
-uint8_t*        flower_music_get_current_scale (void);
-int             flower_music_get_current_root (void);
+#define JSON_BPM_TAG "bpm"
+#define JSON_SCALE_TAG "scale"
+#define JSON_ROOT_TAG "root"
+#define JSON_CHANNEL_MUL "mul"
 
-#endif
+
+StaticJsonDocument<1024> jdoc;
+
+extern CMidiFlowerSequencer sequencer;  
+
+static void config_set_json (void)
+{
+    
+    jdoc[JSON_BPM_TAG] = flower_music_get_basebpm ();
+    jdoc[JSON_SCALE_TAG] = flower_music_get_scale ();
+    jdoc[JSON_ROOT_TAG] = flower_music_get_current_root ();
+    
+    JsonArray array = jdoc.to<JsonArray>();
+
+    for (uint8_t c = 0; c < sequencer.get_nbtracks (); c++)
+    {
+        JsonObject channels = jdoc.createNestedObject();
+        channels[JSON_CHANNEL_MUL] = sequencer.get_track_mulbpm (c);
+        array.add (channels); 
+    }
+    
+}
+
+void config_save (void)
+{
+    String content = "json debile";
+    //jdoc.clear ();
+    config_set_json ();
+    serializeJson(jdoc, content);
+    Serial.printf("JSON content: %s\r\n", content);
+    serializeJsonPretty(jdoc, Serial);
+}

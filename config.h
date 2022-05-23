@@ -27,30 +27,9 @@ This project is based on https://github.com/electricityforprogress/MIDIsprout gr
 work about biodata sonification
 */
 
+#ifndef __CONFIG_H
+#define __CONFIG_H
 
-#ifndef __FLOWER_MUSIC_H
-#define __FLOWER_MUSIC_H
-
-#include "MidiFlowerSequencer.h"
-#include "sequence.h"
-
-#define FLOWER_MUSIC_SCALE_SIZE 12
-
-void            BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
-int             scaleNote(int note, uint8_t scale[], int root);
-void            setNote(uint32_t currentMillis, int value, int velocity, long duration);
-void            ControlMusic (void);
-void            flower_music_init (void);
-int             flower_music_get_root (void);
-void            flower_music_set_root (int root);
-uint32_t        flower_music_get_basebpm (void);
-void            flower_music_set_basebpm (uint32_t bpm);
-void            flower_music_reset (void);
-uint8_t         flower_music_get_scale (void);
-void            flower_music_set_scale (uint8_t scale);
-const char**    flower_music_get_scale_name (void);
-uint8_t         flower_music_get_scale_name_nbr (void);
-uint8_t*        flower_music_get_current_scale (void);
-int             flower_music_get_current_root (void);
-
+void config_save (void);
+int config_load (void);
 #endif

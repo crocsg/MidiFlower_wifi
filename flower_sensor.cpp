@@ -192,7 +192,7 @@ void flower_sensor_analyzeSample(void)
 
     if (change && _setmes)
     {
-      Serial.printf("%ld %ld %ld %ld %f %f\r\n", minim, maxim, averg, delta, stdevi, stdevi * threshold); 
+      //Serial.printf("%ld %ld %ld %ld %f %f\r\n", minim, maxim, averg, delta, stdevi, stdevi * threshold); 
       _setmes (minim, maxim, averg, delta, stdevi, stdevi * threshold);
     }
     //reset array for next sample
