@@ -38,7 +38,7 @@ work about biodata sonification
 class CSequence
 {
 public:
-    CSequence (size_t size, uint32_t bpm, uint32_t bpmmulti, uint32_t noteratio);
+    CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t noteratio);
     
     void addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint8_t notechannel);
     uint8_t play (uint32_t time, MIDImessage* mes);
@@ -46,8 +46,24 @@ public:
     void mute (int vel);
     
     size_t   getnbnotes () { return m_cntnote;}
-    size_t   size() {return m_seq.size();}
-    
+    size_t   size() {return m_size;}
+    void setSize (size_t size)
+    {
+        if (m_seq.size () >= size)
+            m_size = size;
+        UpdateNbNote ();    
+    }
+
+    void setRatio (uint32_t ratio)
+    {
+        m_noteratio = ratio > 100 ? 100 : ratio;
+        UpdateNbNote ();            
+    }
+
+    uint32_t getRatio (void)
+    {
+        return m_noteratio;
+    }
 
     void    setBpm (uint32_t bpm)
     {
@@ -87,6 +103,9 @@ private:
         else
             m_tempo = 0;
     }
+    
+    void UpdateNbNote (void);
+    
     uint8_t play_seq (uint32_t time, MIDImessage* mes);
     
 

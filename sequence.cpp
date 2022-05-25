@@ -29,13 +29,13 @@ work about biodata sonification
 #include "sequence.h"
 
 
-CSequence::CSequence (size_t size, uint32_t bpm, uint32_t bpmmulti, uint32_t noteratio)
+CSequence::CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t noteratio)
 {
     
     m_tempo = 0;
-    m_seq.resize (size);
+    m_seq.resize (maxsize);
     m_noteratio = noteratio;
-   
+    m_size = maxsize;
     
     m_lastplay = 0;
     m_cntnote = 0;
@@ -57,18 +57,18 @@ void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_
     mes.duration = duration;
     mes.channel = notechannel;
 
-    size_t pos = (time / m_tempo) % m_seq.size ();
+    size_t pos = (time / m_tempo) % m_size;
     if (m_seq[pos].velocity == 0)
         m_cntnote++;
     m_seq[pos] = mes;
     //Serial.printf("addNote time =%lu pos=%d, size=%d, ch=%d, nbnote=%d tempo=%ld\n", time, pos, m_seq.size(), notechannel, m_cntnote, m_tempo);
     
     // delete a note if sequence is full
-    if (m_cntnote > (m_seq.size() * m_noteratio ) / 100)
+    if (m_cntnote > (m_size * m_noteratio ) / 100)
     {
         for (auto it = m_seq.begin () + pos + 1; it != m_seq.end (); it++)
         {
-            if (it->velocity == 1)
+            if (it->velocity > 0)
             {
                 it->velocity = 0;
                 m_cntnote--;
@@ -93,7 +93,7 @@ uint8_t CSequence::play_seq (uint32_t time, MIDImessage* mes)
 {
     if (m_tempo == 0)
         return (0);
-    size_t pos = (time / m_tempo) % m_seq.size ();
+    size_t pos = (time / m_tempo) % m_size;
     
     if (m_seq[pos].velocity != 0)
     {
@@ -117,5 +117,15 @@ void CSequence::mute (int vel)
         if (it->velocity > vel)
             it->velocity = (it->velocity * vel) / 100;
     
+}
+
+void CSequence::UpdateNbNote (void)
+{
+    m_cntnote = 0;
+    for (auto it = m_seq.begin () ; it != m_seq.end () && it != m_seq.begin () + m_size; it++)
+    {
+        if (it->velocity > 0)
+            m_cntnote++;
+    }
 }
 
