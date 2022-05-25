@@ -82,10 +82,18 @@ public:
         return (m_ptracks[track]->size());
     }
 
+    size_t get_track_maxnote (uint8_t track)
+    {
+        if (track >= m_ptracks.size())
+            return (0);
+        return ((m_ptracks[track]->size() * 100) /  m_ptracks[track]->getRatio());   
+    }
+
     void addNote (uint8_t track, uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint8_t notechannel)
     {
         if (track >= m_ptracks.size())
             return;
+        Serial.printf ("add note chan=%d time=%lu value=%d duration=%d \n", notechannel, time, value, duration);
         m_ptracks[track]->addNote (time, value, velocity, duration, notechannel);
     }
 

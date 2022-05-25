@@ -69,6 +69,6 @@ void config_save (void)
     //jdoc.clear ();
     config_set_json ();
     serializeJson(jdoc, content);
-    Serial.printf("JSON content: %s\r\n", content);
-    serializeJsonPretty(jdoc, Serial);
+    //Serial.printf("JSON content: %s\r\n", content);
+    //serializeJsonPretty(jdoc, Serial);
 }

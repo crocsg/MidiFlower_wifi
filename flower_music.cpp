@@ -81,15 +81,15 @@ const char* scalename[] =
   "Minor Melodic",
   "Pentatonic Major",
   "Pentatonic Minor",
-  "Blues"
+  "Blues",
   "Chromatic"
 };
 
 uint8_t *scaleSelect = scaleMajor; //initialize scaling
 uint8_t current_scale = 0;
 int root = 4;       //initialize for root
-uint8_t noteMin = 24;   //C1  - keyboard note minimum
-uint8_t noteMax = 84;   //C6  - keyboard note maximum
+uint8_t noteMin = 36; //24;   //C1  - keyboard note minimum
+uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
 
 uint32_t basebpm   = BASE_BPM;
 
@@ -113,7 +113,7 @@ void flower_music_init (void)
 // stdevical standard deviation * threshold
 void BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
 {
-    int dur = 200+(map(delta%127,1,127,100,2000));      //length of note derived from delta
+    int dur = 200+(map(delta%127,1,127,100,800));      //length of note derived from delta
     int ramp = 3 + (dur%80) ; //control slide rate, min 25 (or 3 ;)
      
 
@@ -142,17 +142,22 @@ void setNote(uint32_t currentMillis, int value, int velocity, long duration)
 {
     //Serial.printf ("add note time =%lu\n", currentMillis);
   // if first track is not 33% full add the note to it
-  if (sequencer.get_track_nbnote(0) < sequencer.get_track_size (0) / 3)
+  if (sequencer.get_track_nbnote(0) < sequencer.get_track_maxnote (0) / 2 && sequencer.get_track_mulbpm(0) > 0)
     sequencer.addNote(0, currentMillis, value, velocity, duration, 1);
   // if second track is not full at 33% add the note to it
-  else if (sequencer.get_track_nbnote(1) < sequencer.get_track_size (1) / 3)
+  else if (sequencer.get_track_nbnote(1) < sequencer.get_track_maxnote (1) / 2 && sequencer.get_track_mulbpm(1) > 0)
     sequencer.addNote(1, currentMillis, value, velocity, duration, 2);
   else
   {
     // find a track and add the note
-    uint16_t seq = currentMillis % sequencer.get_nbtracks ();
-    
-    sequencer.addNote(seq, currentMillis, value, velocity, duration, seq + 1);
+    uint16_t nbtracks = sequencer.get_nbtracks ();
+    uint16_t seq = (uint16_t)  (currentMillis % nbtracks);
+    for (uint16_t t = seq ; t < seq + nbtracks; t++)
+    {
+      uint16_t track = t % nbtracks;
+      if (sequencer.get_track_mulbpm (track) > 0)
+        sequencer.addNote(track, currentMillis, value, velocity, duration, track + 1);
+    }
   }
 }
 

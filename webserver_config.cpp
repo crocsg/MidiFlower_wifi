@@ -252,9 +252,9 @@ static void setRatio(uint8_t track, uint32_t ratio)
     std::vector<CSequence *> sequences = sequencer.get_tracks();
     if (sequences.size () > track)
     {
-        
+        Serial.printf ("Track %d ratio %d\n", track, ratio);
         sequences[track]->setRatio (ratio);
-        
+        Serial.printf ("Track %d ratio %d\n", track, sequences[track]->getRatio ());        
     }
     config_save ();
 }
