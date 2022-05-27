@@ -28,7 +28,8 @@ with the web gui, you can change
 - Adapt channel filling (how much notes are stored in loop)
 - Choose a scale (Chromatic, Major, Pentatonic, Blues...)
 - Choose root scale note
-All options are saved in flash, so you get get the same options on restart
+
+## All options are saved in flash, so you get get the same options on restart
 
 
 # dependencies
