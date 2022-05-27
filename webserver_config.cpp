@@ -43,6 +43,11 @@ work about biodata sonification
 WebServer server(HTTP_PORT);
 DNSServer dnsServer;
 
+
+#define MIDI_OCTAVE_NOTE    12
+#define MAX_OCTAVE          5
+#define MIN_OCTAVE_NOTE     24
+
 // get the sequencer from flower_music
 extern CMidiFlowerSequencer sequencer;  
 
@@ -61,10 +66,18 @@ static void handle_NotFound();
 static void handle_OntestScale();
 static void handle_OnPlay();
 static void handle_OnConfigChannel();
+static void handle_OnsetMin();
 
 static String HomePage(void);
 static String TestPage (void);
 static String ChannelPage (void);
+
+static const char *midioctave[] =
+{
+    "C1",
+    "C2",
+    "C3",
+};
 
 static const char *midinotes[] =
     {
@@ -130,6 +143,8 @@ void webserver_config_init(void)
     server.on(UriBraces("/setroot={}"), handle_Onsetroot);   // set root page
     server.on(UriBraces("/settempo={}"), handle_Onsettempo); // set root page
     server.on(UriBraces("/setscale={}"), handle_Onsetscale); // set scale page
+    server.on(UriBraces("/setmin={}"), handle_OnsetMin);    // set Note min
+
     server.on(UriBraces("/setmul1={}"), handle_Onsetmul1);   // set time multiplier
     server.on(UriBraces("/setmul2={}"), handle_Onsetmul2);   // set time multiplier
     server.on(UriBraces("/setmul3={}"), handle_Onsetmul3);   // set time multiplier
@@ -162,21 +177,21 @@ void webserver_handle_event(void)
 static void handle_OnHome()
 {
     sequencer.setLock(false);
-    Serial.printf("Web server Home page request\n");
+    //Serial.printf("Web server Home page request\n");
     server.send(200, "text/html", HomePage());
 }
 
 static void handle_OntestScale()
 {
     sequencer.setLock(true);
-    Serial.printf("Web server Test scale page request\n");
+    //Serial.printf("Web server Test scale page request\n");
     server.send(200, "text/html", TestPage());
 }
 
 static void handle_OnConfigChannel()
 {
     sequencer.setLock(false);
-    Serial.printf("Web server Test scale page request\n");
+    //Serial.printf("Web server Config channel page request\n");
     server.send(200, "text/html", ChannelPage());
 }
 
@@ -185,7 +200,7 @@ static void handle_OnPlay()
     String snote = server.pathArg(0);
     uint8_t note = (uint8_t) atoi(snote.c_str());
     
-    note = note + 48; // note derived from C3
+    note = note + flower_music_get_note_min(); // note derived from configurated octave
     //flower_music_reset ();
     sequencer.midiSerial(144, 1, note, 100);
 
@@ -213,6 +228,18 @@ static void handle_Onsetscale()
     server.send(200, "text/html", HomePage());
 }
 
+static void handle_OnsetMin()
+{
+    String mins = server.pathArg(0);
+    int newmin = atoi(mins.c_str());
+    flower_music_set_note_min((newmin * MIDI_OCTAVE_NOTE) + MIN_OCTAVE_NOTE);
+    flower_music_set_note_max(flower_music_get_note_min () + (MAX_OCTAVE * MIDI_OCTAVE_NOTE));
+
+    config_save ();
+
+    server.send(200, "text/html", HomePage());
+}
+
 static void handle_Onsettempo()
 {
     String bpms = server.pathArg(0);
@@ -227,12 +254,13 @@ static void handle_Onsettempo()
 static void setMul(uint8_t track, uint32_t mul)
 {
     std::vector<CSequence *> sequences = sequencer.get_tracks();
-    if (track < sequences.size ())
+    if (sequences.size () > track)
     {
         //flower_music_reset ();
         sequences[track]->setBpmMultiplier (mul);
+        config_save ();
     }
-    config_save ();
+    
 }
 
 static void setSize(uint8_t track, uint32_t size)
@@ -240,11 +268,12 @@ static void setSize(uint8_t track, uint32_t size)
     std::vector<CSequence *> sequences = sequencer.get_tracks();
     if (sequences.size () > track)
     {
-        Serial.printf ("set size chan %d =%lu\n", track, size);
+        //Serial.printf ("set size chan %d =%lu\n", track, size);
         sequences[track]->setSize (size);
-        Serial.printf ("set size chan %d =%lu\n", track, sequences[track]->size());
+        //Serial.printf ("set size chan %d =%lu\n", track, sequences[track]->size());
+        config_save ();
     }
-    config_save ();
+    
 }
 
 static void setRatio(uint8_t track, uint32_t ratio)
@@ -252,9 +281,9 @@ static void setRatio(uint8_t track, uint32_t ratio)
     std::vector<CSequence *> sequences = sequencer.get_tracks();
     if (sequences.size () > track)
     {
-        Serial.printf ("Track %d ratio %d\n", track, ratio);
+        //Serial.printf ("Track %d ratio %d\n", track, ratio);
         sequences[track]->setRatio (ratio);
-        Serial.printf ("Track %d ratio %d\n", track, sequences[track]->getRatio ());        
+        //Serial.printf ("Track %d ratio %d\n", track, sequences[track]->getRatio ());        
     }
     config_save ();
 }
@@ -263,7 +292,7 @@ static void handle_Onsetmul1()
 {
     String muls = server.pathArg(0);
     uint32_t mul = atoi(muls.c_str());
-    Serial.printf ("set mul 1 =%lu\n", mul);
+    //Serial.printf ("set mul 1 =%lu\n", mul);
     setMul (0, mul);
     
     server.send(200, "text/html", ChannelPage());
@@ -274,7 +303,7 @@ static void handle_Onsetmul2()
     String muls = server.pathArg(0);
     int mul = atoi(muls.c_str());
     
-    Serial.printf ("set mul 2 =%lu\n", mul);
+    //Serial.printf ("set mul 2 =%lu\n", mul);
     setMul (1, mul);
     
     server.send(200, "text/html", ChannelPage());
@@ -285,7 +314,7 @@ static void handle_Onsetmul3()
     String muls = server.pathArg(0);
     int mul = atoi(muls.c_str());
     
-    Serial.printf ("set mul 3 =%lu\n", mul);
+    //Serial.printf ("set mul 3 =%lu\n", mul);
 
     setMul (2, mul);
     
@@ -297,7 +326,7 @@ static void handle_Onsetmul4()
     String muls = server.pathArg(0);
     int mul = atoi(muls.c_str());
     
-    Serial.printf ("set mul 4 =%lu\n", mul);
+    //Serial.printf ("set mul 4 =%lu\n", mul);
     setMul (3, mul);
     
     server.send(200, "text/html", ChannelPage());
@@ -370,7 +399,7 @@ static String HomePage(void)
     String ptr = GetHTMLHeader ();
     ptr += "<h1>MIDI Flower Control</h1>\n";
 
-    ptr += "<h1>Scale</h1>\n";
+    ptr += "<h1 id=\"scale\">Scale</h1>\n";
     int scalenbr = flower_music_get_scale_name_nbr();
     const char **scalenames = flower_music_get_scale_name();
     int cur_scale = flower_music_get_scale ();
@@ -380,7 +409,7 @@ static String HomePage(void)
         Serial.printf ("Scale name %s\n", scalenames[n]);
         if (n == cur_scale)
         {
-            ptr += "<a class=\"button button-on\" href=\"/\">";
+            ptr += "<a class=\"button button-on\" href=\"#scale\">";
             ptr += scalenames[n];
             ptr += "</a>\n";                 
         }
@@ -393,13 +422,13 @@ static String HomePage(void)
             ptr += "</a>\n";
         }
     }
-    ptr += "<h1>BPM</h1>\n";
+    ptr += "<h1 id=\"bpm\">BPM</h1>\n";
     uint16_t bpm = flower_music_get_basebpm();
     for (uint8_t n = 0; n < ARRAYLEN(miditempo); n++)
     {
         if (bpm == miditempo[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"/\">";
+            ptr += "<a class=\"button button-off\" href=\"#bpm\">";
             ptr += std::to_string(bpm).c_str();
             ptr += "</a>\n";
         }
@@ -413,8 +442,27 @@ static String HomePage(void)
         }
     }
 
-   
-    ptr += "<h1>Tone</h1>\n";
+    ptr += "<h1 id=\"nmin\">Note Min</h1>\n";
+    int vmin = ((flower_music_get_note_min () - MIN_OCTAVE_NOTE) / MIDI_OCTAVE_NOTE) % ARRAYLEN(midioctave);
+     for (uint8_t n = 0; n < ARRAYLEN(midioctave); n++)
+    {
+        if (vmin == n)
+        {
+            ptr += "<a class=\"button button-off\" href=\"#nmin\">";
+            ptr += midioctave[n];
+            ptr += "</a>\n";
+        }
+        else
+        {
+            ptr += "<a class=\"button button-on\" href=\"/setmin=";
+            ptr += std::to_string(n).c_str();
+            ptr += "\">";
+            ptr += midioctave[n];
+            ptr += "</a>\n";
+        }
+    }
+
+    ptr += "<h1 id=\"tone\">Tone</h1>\n";
 
     int root = flower_music_get_root();
     for (uint8_t n = 0; n < ARRAYLEN(midinotes); n++)
@@ -424,7 +472,7 @@ static String HomePage(void)
         {
             // ptr +="<p>";
             // ptr +="</p>";
-            ptr += "<a class=\"button button-off\" href=\"/\">";
+            ptr += "<a class=\"button button-off\" href=\"#tone\">";
             ptr += midinotes[n];
             ptr += "</a>\n";
         }

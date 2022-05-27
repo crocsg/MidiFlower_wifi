@@ -85,13 +85,13 @@ const char* scalename[] =
   "Chromatic"
 };
 
-uint8_t *scaleSelect = scaleMajor; //initialize scaling
-uint8_t current_scale = 0;
-int root = 4;       //initialize for root
-uint8_t noteMin = 36; //24;   //C1  - keyboard note minimum
-uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
+static uint8_t *scaleSelect = scaleMajor; //initialize scaling
+static uint8_t current_scale = 0;
+static int root = 4;       //initialize for root
+static uint8_t noteMin = 36; //24;   //C1  - keyboard note minimum
+static uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
 
-uint32_t basebpm   = BASE_BPM;
+static uint32_t basebpm   = BASE_BPM;
 
 
 void flower_music_init (void)
@@ -292,4 +292,24 @@ uint8_t* flower_music_get_current_scale (void)
 int flower_music_get_current_root (void)
 {
   return (root);
+}
+
+int flower_music_get_note_min (void)
+{
+  return (noteMin);
+}
+
+void flower_music_set_note_min (int minv)
+{
+  noteMin = minv;
+}
+
+int flower_music_get_note_max (void)
+{
+  return (noteMax);
+}
+
+void flower_music_set_note_max (int maxv)
+{
+  noteMax = maxv;
 }

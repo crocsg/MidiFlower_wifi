@@ -47,7 +47,7 @@ CSequence::CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t 
 
 void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint8_t notechannel)
 {
-    Serial.printf("addNote vel=%d tempo =%d", velocity, m_tempo );    
+    //Serial.printf("addNote vel=%d tempo =%d", velocity, m_tempo );    
     if (velocity == 0 || m_tempo == 0)
         return;
     MIDImessage mes;
@@ -61,7 +61,7 @@ void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_
     if (m_seq[pos].velocity == 0)
         m_cntnote++;
     m_seq[pos] = mes;
-    Serial.printf("addNote pos=%d time =%lu size=%d, ch=%d, nbnote=%d tempo=%ld\n", pos, time, m_size, notechannel, m_cntnote, m_tempo);
+    //Serial.printf("addNote pos=%d time =%lu size=%d, ch=%d, nbnote=%d tempo=%ld\n", pos, time, m_size, notechannel, m_cntnote, m_tempo);
     
     // delete a note if sequence is full
     if (m_cntnote > (m_size * m_noteratio ) / 100)

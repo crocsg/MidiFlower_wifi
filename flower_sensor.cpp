@@ -33,10 +33,10 @@ work about biodata sonification
 
 
 #include "flower_sensor.h"
-
+#include "board.h"
 
 #define DESIRED_EVENT 24
-#define SAMPLESIZE    48
+#define SAMPLESIZE    32
 #define MIN_DELTA     500
 
 static flower_sensor_callback_mes _setmes;
@@ -151,7 +151,7 @@ void flower_sensor_analyzeSample(void)
 
 
 
-   //digitalWrite(LED, ((state) & 0x01) == 0 ? HIGH : LOW);
+   digitalWrite(LED, ((state) & 0x01) == 0 ? LED_ON : LED_OFF);
   state++;
   if (_sindex >= _samplesize) { //array is full
     unsigned long sampanalysis[SAMPLESIZE];

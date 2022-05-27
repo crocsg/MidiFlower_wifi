@@ -52,5 +52,9 @@ const char**    flower_music_get_scale_name (void);
 uint8_t         flower_music_get_scale_name_nbr (void);
 uint8_t*        flower_music_get_current_scale (void);
 int             flower_music_get_current_root (void);
+void            flower_music_set_note_max (int maxv);
+void            flower_music_set_note_min (int minv);
+int             flower_music_get_note_min (void);
+int             flower_music_get_note_max (void);
 
 #endif

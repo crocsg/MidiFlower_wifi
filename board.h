@@ -29,9 +29,32 @@
 #ifndef __BOARD_H
 #define __BOARD_H
 
+#include <Arduino.h>
+
+#define SAMPLESIZE  32
+
+#define BOARD_LOLIN32           0
+#define BOARD_VELLEMAN_ESP32    1
 
 
-#define SAMPLESIZE  48
+#define BOARD_CONFIG    BOARD_LOLIN32
+
+#if (BOARD_CONFIG == BOARD_LOLIN32)
+#define LED                        5     // ESP32 Onboard LED (depends on ESP32 board)
+#define LED_ON  LOW
+#define LED_OFF HIGH
+
+#define FLOWER_SENSOR_PIN          2     // galvanometer input (flower sensor)
+
+#endif
+
+#if (BOARD_CONFIG == BOARD_VELLEMAN_ESP32)
+#define LED                         5     // ESP32 Onboard LED (depends on ESP32 board)
+#define LED_ON  HIGH
+#define LED_OFF LOW
+
+#define FLOWER_SENSOR_PIN          12     // galvanometer input (flower sensor)
+#endif
 
 
 

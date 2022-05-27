@@ -30,24 +30,16 @@ work about biodata sonification
 #include <Arduino.h>
 #include <BLEMidi.h>
 
+#include "board.h"
 #include "midinote.h"
 #include "flower_music.h"
 #include "sequence.h"
 #include "flower_sensor.h"
 #include "wifiap.h"
+#include "config.h"
 
 #define NBNOTE_FOR_BETTER_MEASURE   15
 
-#define LED                         5     // ESP32 Onboard LED (depends on ESP32 board)
-
-
-
-#define LOLIN32 1                         // delete this on welleman esp32
-#ifdef LOLIN32
-#define FLOWER_SENSOR_PIN          2     // galvanometer input (flower sensor)
-#else
-#define FLOWER_SENSOR_PIN          12     // galvanometer input (flower sensor)
-#endif
 
 
 
@@ -76,14 +68,17 @@ void setup()
 
   // initialize led output
   pinMode(LED, OUTPUT);
-  digitalWrite(LED, HIGH); // set led ON
+  digitalWrite(LED, LED_ON); // set led ON
 
   // start BLE Midi server
   sprintf(bleserverid, "BioData_%08lx MIDI device", chipId); // build BLE Midi name
   BLEMidiServer.begin(bleserverid);                          // initialize bluetooth midi
   
+
   // start Serial if you want to debug
   Serial.begin(115200);                 //initialize Serial for debug
+
+  config_init ();
 
   // start wifi Access Point
   wifiap_init (chipId);
@@ -101,6 +96,9 @@ void setup()
   // define a function to get measures
   flower_sensor_set_callback (flowersensor_measure);
 
+  // load config
+  config_load ();
+  
   // enable sequencer
   sequencer.setLock(false);
 }

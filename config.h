@@ -31,5 +31,7 @@ work about biodata sonification
 #define __CONFIG_H
 
 void config_save (void);
-int config_load (void);
+void config_load (void);
+void config_init (void);
+
 #endif
