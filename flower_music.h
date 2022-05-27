@@ -37,8 +37,8 @@ work about biodata sonification
 #define FLOWER_MUSIC_SCALE_SIZE 12
 
 void            BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
-int             scaleNote(int note, uint8_t scale[], int root);
-void            setNote(uint32_t currentMillis, int value, int velocity, long duration);
+uint16_t        scaleNote(uint16_t note, uint8_t scale[], uint16_t root);
+void            setNote(uint32_t currentMillis, int value, int velocity, int duration, int ramp);
 void            ControlMusic (void);
 void            flower_music_init (void);
 int             flower_music_get_root (void);

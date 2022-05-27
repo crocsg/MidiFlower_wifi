@@ -45,7 +45,7 @@ CSequence::CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t 
     UpdateTempo ();
 }
 
-void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint8_t notechannel)
+void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint16_t ramp, uint8_t notechannel)
 {
     //Serial.printf("addNote vel=%d tempo =%d", velocity, m_tempo );    
     if (velocity == 0 || m_tempo == 0)
@@ -56,6 +56,7 @@ void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_
     mes.velocity = velocity;
     mes.duration = duration;
     mes.channel = notechannel;
+    mes.ramp = ramp;
 
     size_t pos = (time / m_tempo) % m_size;
     if (m_seq[pos].velocity == 0)

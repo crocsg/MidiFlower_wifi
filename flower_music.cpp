@@ -87,7 +87,7 @@ const char* scalename[] =
 
 static uint8_t *scaleSelect = scaleMajor; //initialize scaling
 static uint8_t current_scale = 0;
-static int root = 4;       //initialize for root
+static uint16_t root = 4;       //initialize for root
 static uint8_t noteMin = 36; //24;   //C1  - keyboard note minimum
 static uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
 
@@ -113,40 +113,40 @@ void flower_music_init (void)
 // stdevical standard deviation * threshold
 void BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
 {
-    int dur = 200+(map(delta%127,1,127,100,800));      //length of note derived from delta
-    int ramp = 3 + (dur%80) ; //control slide rate, min 25 (or 3 ;)
+    uint16_t dur = 200+(map(delta%127,1,127,100,800));      //length of note derived from delta
+    uint16_t ramp = 3 + (dur%80) ; //control slide rate, min 25 (or 3 ;)
      
 
     //set scaling, root key, note
-    int note = map(averg%127,0,127,noteMin,noteMax);    //derive note from average measure
+    uint16_t note = map(averg%127,0,127,noteMin,noteMax);    //derive note from average measure
     //note = scaleNote(note, scaleSelect, root);          //scale the note (force the note in selected scale)
     
-    setNote(currentmillis, note, 100, dur);                            // add the note in some sequencer channels
+    setNote(currentmillis, note, 100, dur, ramp);                            // add the note in some sequencer channels
 }
 
 
 
 
-int scaleNote(int note, uint8_t scale[], int root) 
+uint16_t scaleNote(uint16_t note, uint8_t scale[], uint16_t root) 
 {
   
-  int scaled = note % FLOWER_MUSIC_SCALE_SIZE;
-  int octave = note / FLOWER_MUSIC_SCALE_SIZE;
+  uint16_t scaled = note % FLOWER_MUSIC_SCALE_SIZE;
+  uint16_t octave = note / FLOWER_MUSIC_SCALE_SIZE;
   scaled = scaleSelect[scaled];
   scaled = (scaled + (FLOWER_MUSIC_SCALE_SIZE * octave)) + root; //apply octave and root
   
   return scaled;
 }
 
-void setNote(uint32_t currentMillis, int value, int velocity, long duration)
+void setNote(uint32_t currentMillis, int value, int velocity, int duration, int ramp)
 {
     //Serial.printf ("add note time =%lu\n", currentMillis);
   // if first track is not 33% full add the note to it
   if (sequencer.get_track_nbnote(0) < sequencer.get_track_maxnote (0) / 2 && sequencer.get_track_mulbpm(0) > 0)
-    sequencer.addNote(0, currentMillis, value, velocity, duration, 1);
+    sequencer.addNote(0, currentMillis, value, velocity, duration, ramp, 1);
   // if second track is not full at 33% add the note to it
   else if (sequencer.get_track_nbnote(1) < sequencer.get_track_maxnote (1) / 2 && sequencer.get_track_mulbpm(1) > 0)
-    sequencer.addNote(1, currentMillis, value, velocity, duration, 2);
+    sequencer.addNote(1, currentMillis, value, velocity, duration, ramp, 2);
   else
   {
     // find a track and add the note
@@ -156,7 +156,7 @@ void setNote(uint32_t currentMillis, int value, int velocity, long duration)
     {
       uint16_t track = t % nbtracks;
       if (sequencer.get_track_mulbpm (track) > 0)
-        sequencer.addNote(track, currentMillis, value, velocity, duration, track + 1);
+        sequencer.addNote(track, currentMillis, value, velocity, duration, ramp,  track + 1);
     }
   }
 }

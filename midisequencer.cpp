@@ -54,7 +54,7 @@ void CMidiSequencer::Control (uint32_t time)
     {
         if (time - pMidi->time > pMidi->duration && pMidi->velocity != 0)
         {
-            midiSerial(128, pMidi->channel, pMidi->value, pMidi->velocity);
+            midiSerial(128, pMidi->channel, pMidi->value, pMidi->ramp);
             pMidi->velocity = 0;
         }
     }

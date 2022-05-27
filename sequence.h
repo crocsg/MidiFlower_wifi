@@ -40,7 +40,7 @@ class CSequence
 public:
     CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t noteratio);
     
-    void addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint8_t notechannel);
+    void addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint16_t ramp, uint8_t notechannel);
     uint8_t play (uint32_t time, MIDImessage* mes);
     void clear (void);
     void mute (int vel);

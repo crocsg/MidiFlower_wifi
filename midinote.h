@@ -4,13 +4,14 @@
 
 
 typedef struct _MIDImessage { //build structure for Note and Control MIDImessages
-  unsigned int type;
-  int value;
-  int velocity;
-  long duration;
-  long period;
-  int channel;
-  unsigned long time;
+  uint16_t type;
+  uint16_t value;
+  uint16_t velocity;
+  uint16_t duration;
+  uint16_t ramp;
+  uint16_t period;
+  uint16_t channel;
+  uint32_t time;
 } MIDImessage;
 
 #endif
