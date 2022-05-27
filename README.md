@@ -32,7 +32,7 @@ with the web gui, you can configure :
 All options are **saved in flash**, so you get the same options on restart
 
 
-# dependencies
+# Dependencies
 You will need the folowing library to build the firmware with arduino ide (use library manager to install them)
 see [documentation is available here](https://wikifab.org/wiki/Capteur_BioData_pour_ESP32) for arduino ide installation for ESP32
 
