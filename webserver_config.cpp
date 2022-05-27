@@ -101,8 +101,8 @@ static const uint16_t seqsize[] =
     8,
     16,
     32,
-    60,
-    120
+    64,
+    128
 };
 
 static const uint16_t seqratio[] = 
