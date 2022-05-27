@@ -21,7 +21,7 @@ Use your mobile phone to connect to the acces point
 The configuration board can be reach on http://192.168.163.1. On Android phone you can access the configuration by using "Router Configuration" button
 in wifi channel parameters.
 
-with the web gui, you can change
+with the web gui, you can configure :
 - Base BPM of generated music
 - Adapt a channel BPM from the base BPM (OFF x1 x2 x4)
 - Loop size from 8 notes to 128
@@ -29,7 +29,7 @@ with the web gui, you can change
 - Choose a scale (Chromatic, Major, Pentatonic, Blues...)
 - Choose root scale note
 
-## All options are saved in flash, so you get get the same options on restart
+All options are **saved in flash**, so you get the same options on restart
 
 
 # dependencies
