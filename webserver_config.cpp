@@ -429,15 +429,15 @@ static String HomePage(void)
     {
         if (bpm == miditempo[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"#bpm\">";
+            ptr += "<a class=\"button button-on\" href=\"#bpm\">";
             ptr += String(bpm);
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/settempo=";
+            ptr += "<a class=\"button button-off\" href=\"/settempo=";
             ptr += String(miditempo[n]);
-            ptr += "\">Utiliser ";
+            ptr += "\">";
             ptr += String(miditempo[n]);
             ptr += "</a>\n";
         }
@@ -449,13 +449,13 @@ static String HomePage(void)
     {
         if (vmin == n)
         {
-            ptr += "<a class=\"button button-off\" href=\"#nmin\">";
+            ptr += "<a class=\"button button-on\" href=\"#nmin\">";
             ptr += midioctave[n];
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setmin=";
+            ptr += "<a class=\"button button-off\" href=\"/setmin=";
             ptr += String(n);
             ptr += "\">";
             ptr += midioctave[n];
@@ -473,7 +473,7 @@ static String HomePage(void)
         {
             // ptr +="<p>";
             // ptr +="</p>";
-            ptr += "<a class=\"button button-off\" href=\"#tone\">";
+            ptr += "<a class=\"button button-on\" href=\"#tone\">";
             ptr += midinotes[n];
             ptr += "</a>\n";
         }
@@ -481,9 +481,9 @@ static String HomePage(void)
         {
             // ptr +="<p>";
             // ptr +="</p>";
-            ptr += "<a class=\"button button-on\" href=\"/setroot=";
+            ptr += "<a class=\"button button-off\" href=\"/setroot=";
             ptr += String(n);
-            ptr += "\">Utiliser ";
+            ptr += "\">";
             ptr += midinotes[n];
             ptr += "</a>\n";
         }
@@ -515,13 +515,13 @@ static String ChannelPage (void)
 
         if (notemul[n] == multi)
         {
-            ptr += "<a class=\"button button-off\" href=\"#tp1\">";
+            ptr += "<a class=\"button button-on\" href=\"#tp1\">";
             ptr += mul;
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setmul1=";
+            ptr += "<a class=\"button button-off\" href=\"/setmul1=";
             ptr += String(notemul[n]);
             ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
@@ -536,13 +536,13 @@ static String ChannelPage (void)
             
          if (size == seqsize[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"#sl1\">";
+            ptr += "<a class=\"button button-on\" href=\"#sl1\">";
             ptr += String(size);
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setsize=0/";
+            ptr += "<a class=\"button button-off\" href=\"/setsize=0/";
             ptr += String(seqsize[n]);
             ptr += "\">";
             ptr += String(seqsize[n]);
@@ -557,13 +557,13 @@ static String ChannelPage (void)
             
          if (ratio == seqratio[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"#ra1\">";
+            ptr += "<a class=\"button button-on\" href=\"#ra1\">";
             ptr += String(ratio);
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setratio=0/";
+            ptr += "<a class=\"button button-off\" href=\"/setratio=0/";
             ptr += String(seqratio[n]);
             ptr += "\">";
             ptr += String(seqratio[n]);
@@ -582,13 +582,13 @@ static String ChannelPage (void)
 
         if (notemul[n] == multi)
         {
-            ptr += "<a class=\"button button-off\" href=\"#tp2\">";
+            ptr += "<a class=\"button button-on\" href=\"#tp2\">";
             ptr += mul;
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setmul2=";
+            ptr += "<a class=\"button button-off\" href=\"/setmul2=";
             ptr += String(notemul[n]);
             
             ptr += n == 0 ? "\">" : "\">X ";
@@ -604,13 +604,13 @@ static String ChannelPage (void)
             
          if (size == seqsize[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"#sl2\">";
+            ptr += "<a class=\"button button-on\" href=\"#sl2\">";
             ptr += String(size);
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setsize=1/";
+            ptr += "<a class=\"button button-off\" href=\"/setsize=1/";
             ptr += String(seqsize[n]);
             ptr += "\">";
             ptr += String(seqsize[n]);
@@ -625,13 +625,13 @@ static String ChannelPage (void)
             
          if (ratio == seqratio[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"#ra2\">";
+            ptr += "<a class=\"button button-on\" href=\"#ra2\">";
             ptr += String(ratio);
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setratio=1/";
+            ptr += "<a class=\"button button-off\" href=\"/setratio=1/";
             ptr += String(seqratio[n]);
             ptr += "\">";
             ptr += String(seqratio[n]);
@@ -650,13 +650,13 @@ static String ChannelPage (void)
 
         if (notemul[n] == multi)
         {
-            ptr += "<a class=\"button button-off\" href=\"#tp3\">";
+            ptr += "<a class=\"button button-on\" href=\"#tp3\">";
             ptr += mul;
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setmul3=";
+            ptr += "<a class=\"button button-off\" href=\"/setmul3=";
             ptr += String(notemul[n]);
             ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
@@ -671,13 +671,13 @@ static String ChannelPage (void)
             
          if (size == seqsize[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"#sl3\">";
+            ptr += "<a class=\"button button-on\" href=\"#sl3\">";
             ptr += String(size);
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setsize=2/";
+            ptr += "<a class=\"button button-off\" href=\"/setsize=2/";
             ptr += String(seqsize[n]);
             ptr += "\">";
             ptr += String(seqsize[n]);
@@ -692,13 +692,13 @@ static String ChannelPage (void)
             
          if (ratio == seqratio[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"#ra3\">";
+            ptr += "<a class=\"button button-on\" href=\"#ra3\">";
             ptr += String(ratio);
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setratio=2/";
+            ptr += "<a class=\"button button-off\" href=\"/setratio=2/";
             ptr += String(seqratio[n]);
             ptr += "\">";
             ptr += String(seqratio[n]);
@@ -717,13 +717,13 @@ static String ChannelPage (void)
 
         if (notemul[n] == multi)
         {
-            ptr += "<a class=\"button button-off\" href=\"#tp4\">";
+            ptr += "<a class=\"button button-on\" href=\"#tp4\">";
             ptr += mul;
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setmul4=";
+            ptr += "<a class=\"button button-off\" href=\"/setmul4=";
             ptr += String(notemul[n]);
             ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
@@ -738,13 +738,13 @@ static String ChannelPage (void)
             
          if (size == seqsize[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"#sl4\">";
+            ptr += "<a class=\"button button-on\" href=\"#sl4\">";
             ptr += String(size);
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setsize=3/";
+            ptr += "<a class=\"button button-off\" href=\"/setsize=3/";
             ptr += String(seqsize[n]);
             ptr += "\">";
             ptr += String(seqsize[n]);
@@ -759,13 +759,13 @@ static String ChannelPage (void)
             
          if (ratio == seqratio[n])
         {
-            ptr += "<a class=\"button button-off\" href=\"#ra4\">";
+            ptr += "<a class=\"button button-on\" href=\"#ra4\">";
             ptr += String(ratio);
             ptr += "</a>\n";
         }
         else
         {
-            ptr += "<a class=\"button button-on\" href=\"/setratio=3/";
+            ptr += "<a class=\"button button-off\" href=\"/setratio=3/";
             ptr += String(seqratio[n]);
             ptr += "\">";
             ptr += String(seqratio[n]);
