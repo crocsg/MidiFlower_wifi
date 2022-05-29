@@ -34,7 +34,7 @@ All options are **saved in flash**, so you get the same options on restart
 
 # Dependencies
 You will need the folowing library to build the firmware with arduino ide (use library manager to install them)
-see [documentation is available here](https://wikifab.org/wiki/Capteur_BioData_pour_ESP32) for arduino ide installation for ESP32
+see [documentation available here](https://wikifab.org/wiki/Capteur_BioData_pour_ESP32) to install arduino ide installation for ESP32 Boards
 
 - BLE-Midi
 - ESP32-Ble-Midi
