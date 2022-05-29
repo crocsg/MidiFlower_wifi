@@ -38,9 +38,9 @@
 
 // change the define accordingly to your configuration
 //#define BOARD_CONFIG    BOARD_LOLIN32
-#define BOARD_CONFIG    BOARD_VELLEMAN_ESP32
+#define BOARD_CONFIG    BOARD_LOLIN32
 
-#if (BOARD_CONFIG == BOARD_LOLIN32)
+#if (BOARD_CONFIG == BOARD_VELLEMAN_ESP32)
 #define LED                        5     // ESP32 Onboard LED (depends on ESP32 board)
 #define LED_ON  LOW
 #define LED_OFF HIGH

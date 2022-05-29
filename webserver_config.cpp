@@ -26,6 +26,7 @@ This project is based on https://github.com/electricityforprogress/MIDIsprout gr
 work about biodata sonification
 */
 
+#include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
 #include <DNSServer.h>
@@ -416,7 +417,7 @@ static String HomePage(void)
         else
         {
             ptr += "<a class=\"button button-off\" href=\"/setscale=";
-            ptr += std::to_string(n).c_str();
+            ptr += String(n);
             ptr += "\">";
             ptr += scalenames[n];
             ptr += "</a>\n";
@@ -429,15 +430,15 @@ static String HomePage(void)
         if (bpm == miditempo[n])
         {
             ptr += "<a class=\"button button-off\" href=\"#bpm\">";
-            ptr += std::to_string(bpm).c_str();
+            ptr += String(bpm);
             ptr += "</a>\n";
         }
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/settempo=";
-            ptr += std::to_string(miditempo[n]).c_str();
+            ptr += String(miditempo[n]);
             ptr += "\">Utiliser ";
-            ptr += std::to_string(miditempo[n]).c_str();
+            ptr += String(miditempo[n]);
             ptr += "</a>\n";
         }
     }
@@ -455,7 +456,7 @@ static String HomePage(void)
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setmin=";
-            ptr += std::to_string(n).c_str();
+            ptr += String(n);
             ptr += "\">";
             ptr += midioctave[n];
             ptr += "</a>\n";
@@ -481,7 +482,7 @@ static String HomePage(void)
             // ptr +="<p>";
             // ptr +="</p>";
             ptr += "<a class=\"button button-on\" href=\"/setroot=";
-            ptr += std::to_string(n).c_str();
+            ptr += String(n);
             ptr += "\">Utiliser ";
             ptr += midinotes[n];
             ptr += "</a>\n";
@@ -510,7 +511,7 @@ static String ChannelPage (void)
     {
         String mul = "Off";
         if (n > 0)
-            mul = std::to_string (notemul[n]).c_str ();
+            mul = String (notemul[n]).c_str ();
 
         if (notemul[n] == multi)
         {
@@ -521,7 +522,7 @@ static String ChannelPage (void)
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setmul1=";
-            ptr += std::to_string(notemul[n]).c_str();
+            ptr += String(notemul[n]);
             ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
             ptr += "</a>\n";
@@ -536,15 +537,15 @@ static String ChannelPage (void)
          if (size == seqsize[n])
         {
             ptr += "<a class=\"button button-off\" href=\"#sl1\">";
-            ptr += std::to_string(size).c_str();
+            ptr += String(size);
             ptr += "</a>\n";
         }
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setsize=0/";
-            ptr += std::to_string(seqsize[n]).c_str();
+            ptr += String(seqsize[n]);
             ptr += "\">";
-            ptr += std::to_string(seqsize[n]).c_str();
+            ptr += String(seqsize[n]);
             ptr += "</a>\n";
         }
     }
@@ -557,15 +558,15 @@ static String ChannelPage (void)
          if (ratio == seqratio[n])
         {
             ptr += "<a class=\"button button-off\" href=\"#ra1\">";
-            ptr += std::to_string(ratio).c_str();
+            ptr += String(ratio);
             ptr += "</a>\n";
         }
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setratio=0/";
-            ptr += std::to_string(seqratio[n]).c_str();
+            ptr += String(seqratio[n]);
             ptr += "\">";
-            ptr += std::to_string(seqratio[n]).c_str();
+            ptr += String(seqratio[n]);
             ptr += "</a>\n";
         }
     }
@@ -577,7 +578,7 @@ static String ChannelPage (void)
     {
         String mul = "Off";
         if (n > 0)
-            mul = std::to_string (notemul[n]).c_str ();
+            mul = String (notemul[n]).c_str ();
 
         if (notemul[n] == multi)
         {
@@ -588,7 +589,7 @@ static String ChannelPage (void)
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setmul2=";
-            ptr += std::to_string(notemul[n]).c_str();
+            ptr += String(notemul[n]);
             
             ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
@@ -604,15 +605,15 @@ static String ChannelPage (void)
          if (size == seqsize[n])
         {
             ptr += "<a class=\"button button-off\" href=\"#sl2\">";
-            ptr += std::to_string(size).c_str();
+            ptr += String(size);
             ptr += "</a>\n";
         }
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setsize=1/";
-            ptr += std::to_string(seqsize[n]).c_str();
+            ptr += String(seqsize[n]);
             ptr += "\">";
-            ptr += std::to_string(seqsize[n]).c_str();
+            ptr += String(seqsize[n]);
             ptr += "</a>\n";
         }
     }
@@ -625,15 +626,15 @@ static String ChannelPage (void)
          if (ratio == seqratio[n])
         {
             ptr += "<a class=\"button button-off\" href=\"#ra2\">";
-            ptr += std::to_string(ratio).c_str();
+            ptr += String(ratio);
             ptr += "</a>\n";
         }
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setratio=1/";
-            ptr += std::to_string(seqratio[n]).c_str();
+            ptr += String(seqratio[n]);
             ptr += "\">";
-            ptr += std::to_string(seqratio[n]).c_str();
+            ptr += String(seqratio[n]);
             ptr += "</a>\n";
         }
     }
@@ -645,7 +646,7 @@ static String ChannelPage (void)
     {
         String mul = "Off";
         if (n > 0)
-            mul = std::to_string (notemul[n]).c_str ();
+            mul = String (notemul[n]).c_str ();
 
         if (notemul[n] == multi)
         {
@@ -656,7 +657,7 @@ static String ChannelPage (void)
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setmul3=";
-            ptr += std::to_string(notemul[n]).c_str();
+            ptr += String(notemul[n]);
             ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
             ptr += "</a>\n";
@@ -671,15 +672,15 @@ static String ChannelPage (void)
          if (size == seqsize[n])
         {
             ptr += "<a class=\"button button-off\" href=\"#sl3\">";
-            ptr += std::to_string(size).c_str();
+            ptr += String(size);
             ptr += "</a>\n";
         }
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setsize=2/";
-            ptr += std::to_string(seqsize[n]).c_str();
+            ptr += String(seqsize[n]);
             ptr += "\">";
-            ptr += std::to_string(seqsize[n]).c_str();
+            ptr += String(seqsize[n]);
             ptr += "</a>\n";
         }
     }
@@ -692,15 +693,15 @@ static String ChannelPage (void)
          if (ratio == seqratio[n])
         {
             ptr += "<a class=\"button button-off\" href=\"#ra3\">";
-            ptr += std::to_string(ratio).c_str();
+            ptr += String(ratio);
             ptr += "</a>\n";
         }
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setratio=2/";
-            ptr += std::to_string(seqratio[n]).c_str();
+            ptr += String(seqratio[n]);
             ptr += "\">";
-            ptr += std::to_string(seqratio[n]).c_str();
+            ptr += String(seqratio[n]);
             ptr += "</a>\n";
         }
     }
@@ -712,7 +713,7 @@ static String ChannelPage (void)
     {
         String mul = "Off";
         if (n > 0)
-            mul = std::to_string(notemul[n]).c_str();
+            mul = String(notemul[n]);
 
         if (notemul[n] == multi)
         {
@@ -723,7 +724,7 @@ static String ChannelPage (void)
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setmul4=";
-            ptr += std::to_string(notemul[n]).c_str();
+            ptr += String(notemul[n]);
             ptr += n == 0 ? "\">" : "\">X ";
             ptr += mul;
             ptr += "</a>\n";
@@ -738,15 +739,15 @@ static String ChannelPage (void)
          if (size == seqsize[n])
         {
             ptr += "<a class=\"button button-off\" href=\"#sl4\">";
-            ptr += std::to_string(size).c_str();
+            ptr += String(size);
             ptr += "</a>\n";
         }
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setsize=3/";
-            ptr += std::to_string(seqsize[n]).c_str();
+            ptr += String(seqsize[n]);
             ptr += "\">";
-            ptr += std::to_string(seqsize[n]).c_str();
+            ptr += String(seqsize[n]);
             ptr += "</a>\n";
         }
     }
@@ -759,15 +760,15 @@ static String ChannelPage (void)
          if (ratio == seqratio[n])
         {
             ptr += "<a class=\"button button-off\" href=\"#ra4\">";
-            ptr += std::to_string(ratio).c_str();
+            ptr += String(ratio);
             ptr += "</a>\n";
         }
         else
         {
             ptr += "<a class=\"button button-on\" href=\"/setratio=3/";
-            ptr += std::to_string(seqratio[n]).c_str();
+            ptr += String(seqratio[n]);
             ptr += "\">";
-            ptr += std::to_string(seqratio[n]).c_str();
+            ptr += String(seqratio[n]);
             ptr += "</a>\n";
         }
     }
@@ -806,7 +807,7 @@ String TestPage (void)
         {
             note = cur_scaleptr[i];
             ptr += "<a class=\"button button-on\" href=\"/play=";
-            ptr += std::to_string(note + root).c_str();
+            ptr += String(note + root);
             ptr += "\">";
             ptr += midinotes[(note + root) % ARRAYLEN(midinotes)];
             ptr += "</a>\n";
