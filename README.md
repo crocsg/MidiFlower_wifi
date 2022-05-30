@@ -16,16 +16,17 @@ More information about the event [Sylvestre Orchestre version de poche](https://
 
 
 # Configuration feature
-We use the ESP32 wifi to enable a Wifi  acces point named MidiFlower_XXXXXXXX.
+We use the ESP32 wifi to enable a Wifi  acces point named **MidiFlower_XXXXXXXX**.
+**The default password of the access point is 12345678** you can chage it in wifiap.cpp
 Use your mobile phone to connect to the acces point
-The configuration board can be reach on http://192.168.163.1. On Android phone you can access the configuration by using "Router Configuration" button
+The configuration board can be reach on **http://192.168.163.1**. On Android phone you can access the configuration by using "Router Configuration" button
 in wifi channel parameters.
 
 with the web gui, you can configure :
 - Base BPM of generated music
 - Adapt a channel BPM from the base BPM (OFF x1 x2 x4)
 - Loop size from 8 notes to 128
-- Adapt channel filling (how much notes are stored in loop)
+- Adapt channel filling (how much notes are stored in loop 25%, 50%, 75%, 100%)
 - Choose a scale (Chromatic, Major, Pentatonic, Blues...)
 - Choose root scale note
 
@@ -41,7 +42,7 @@ see [documentation available here](https://wikifab.org/wiki/Capteur_BioData_pour
 - ArduinoJson
 
 # SPIFFS  Schema
-in Arduino ide select "No OTA (2MB App / 2MB SPIFFS)" in **partition scheme**
+in Arduino ide select **"No OTA (2MB App / 2MB SPIFFS)" in partition scheme**
 
 # Board configuration
 You can configure the pin used for the flower sensor in board.h
@@ -50,7 +51,7 @@ There is already some configuration for basic board
 - LOLIN 32D
 
 Simply change the line 
-#define BOARD_CONFIG    BOARD_VELLEMAN_ESP32
+**#define BOARD_CONFIG    BOARD_VELLEMAN_ESP32**
 to get your favorite board working
 
 # Roadmap
