@@ -41,7 +41,7 @@ see [documentation is available here](https://wikifab.org/wiki/Capteur_BioData_p
 - ArduinoJson
 
 # SPIFFS  Schema
-in Arduino ide select "No OTA (2MB App / 2MB SPIFFS)" in **partition scheme**
+in Arduino ide select **"No OTA (2MB App / 2MB SPIFFS)" in partition scheme**
 
 # Board configuration
 You can configure the pin used for the flower sensor in board.h
