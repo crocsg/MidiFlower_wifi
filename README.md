@@ -17,7 +17,9 @@ More information about the event [Sylvestre Orchestre version de poche](https://
 
 # Configuration feature
 We use the ESP32 wifi to enable a Wifi  acces point named **MidiFlower_XXXXXXXX**.
-**The default password of the access point is 12345678** you can chage it in wifiap.cpp
+
+**The default password of the access point is 12345678** you can chage it in wifiap.cpp.
+
 Use your mobile phone to connect to the acces point
 The configuration board can be reach on **http://192.168.163.1**. On Android phone you can access the configuration by using "Router Configuration" button
 in wifi channel parameters.
