@@ -151,7 +151,7 @@ void flower_sensor_analyzeSample(void)
 
 
 
-   digitalWrite(LED, ((state) & 0x01) == 0 ? LED_ON : LED_OFF);
+   //digitalWrite(LED, ((state) & 0x01) == 0 ? LED_ON : LED_OFF);
   state++;
   if (_sindex >= _samplesize) { //array is full
     unsigned long sampanalysis[SAMPLESIZE];

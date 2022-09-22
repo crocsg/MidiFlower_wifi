@@ -67,9 +67,10 @@ void setup()
   }
 
   // initialize led output
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, LED_ON); // set led ON
-
+  
+	//pinMode(LED, OUTPUT);
+	//digitalWrite(LED, LED_ON); // set led ON
+	
   // start BLE Midi server
   sprintf(bleserverid, "BioData_%08lx MIDI device", chipId); // build BLE Midi name
   BLEMidiServer.begin(bleserverid);                          // initialize bluetooth midi

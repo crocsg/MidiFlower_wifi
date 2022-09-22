@@ -35,10 +35,12 @@
 
 #define BOARD_LOLIN32           0
 #define BOARD_VELLEMAN_ESP32    1
+#define BOARD_ESP32_DEVKIT    	2
 
 // change the define accordingly to your configuration
 //#define BOARD_CONFIG    BOARD_LOLIN32
 #define BOARD_CONFIG    BOARD_VELLEMAN_ESP32
+//#define BOARD_CONFIG    BOARD_ESP32_DEVKIT
 
 #if (BOARD_CONFIG == BOARD_LOLIN32)
 #define LED                        5     // ESP32 Onboard LED (depends on ESP32 board)
@@ -51,6 +53,14 @@
 
 #if (BOARD_CONFIG == BOARD_VELLEMAN_ESP32)
 #define LED                         5     // ESP32 Onboard LED (depends on ESP32 board)
+#define LED_ON  HIGH
+#define LED_OFF LOW
+
+#define FLOWER_SENSOR_PIN          12     // galvanometer input (flower sensor)
+#endif
+
+#if (BOARD_CONFIG == BOARD_ESP32_DEVKIT)
+#define LED                         2     // ESP32 Onboard LED (depends on ESP32 board)
 #define LED_ON  HIGH
 #define LED_OFF LOW
 
