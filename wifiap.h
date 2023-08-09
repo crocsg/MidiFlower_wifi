@@ -28,7 +28,7 @@ work about biodata sonification
 
 #ifndef __WIFIAP_H
 #define __WIFIAP_H
-#include <WiFi.h>
+
 
 
  

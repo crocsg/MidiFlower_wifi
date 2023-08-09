@@ -102,6 +102,7 @@ void flower_music_init (void)
   sequencer.register_track(&midi_track_3);
   sequencer.register_track(&midi_track_4);
   
+  
 }
 
 // Flower sensor measure callback. compute a note and pass it to midi sequencer
@@ -171,14 +172,14 @@ void ControlMusic (void)
     uint32_t last_samples = flower_sensor_get_last_sample_time_ms ();   // get last mesure time
     std::vector<CSequence *>& psequences = sequencer.get_tracks ();     // get tracks
 
-    if (currentMillis - last_samples > 15000)
+    if (currentMillis - last_samples > 5000)
     {
         //no measure for 15s 
         
         psequences[2]->mute (80);   // track3 volume at 80%
         psequences[3]->clear ();    // clear track 4
     }
-    if (currentMillis - last_samples > 30000)
+    if (currentMillis - last_samples > 10000)
     {
         //no measure for 30s 
         psequences[0]->mute (75);   // track1 volume at 75%
@@ -186,7 +187,7 @@ void ControlMusic (void)
         psequences[2]->clear ();    // clear track
         psequences[3]->clear ();    // clear track
     }
-    if (currentMillis - last_samples > 60000)
+    if (currentMillis - last_samples > 20000)
     {
         //no measure for 60s 
         psequences[0]->clear ();    // clear track

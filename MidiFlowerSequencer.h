@@ -38,7 +38,8 @@ public:
         m_sequence_time = 0;
         m_lock = false;
     }
-
+    
+    
     void Loop (void);
 
     void register_track (CSequence* pseq)
@@ -128,4 +129,5 @@ private:
     uint32_t m_previousMillis;
     bool     m_lock;
 };
+
 #endif // __MIDIFLOWERSEQUENCER_H

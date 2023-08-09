@@ -22,13 +22,51 @@
  * THE SOFTWARE.
  *
  */
-
+#include <Arduino.h>
+#include <BLEMidi.h>
+#include <MIDI.h>
+#include "board.h"
 #include "midisequencer.h"
+
+
+#if (MIDI_SERIAL_OUTPUT)
+struct Serial2MIDISettings : public midi::DefaultSettings
+{
+  static const long BaudRate = 31250;
+  static const int8_t RxPin  = PIN_RX_MIDI;
+  static const int8_t TxPin  = PIN_TX_MIDI;
+};
+#endif
+
+
+static char bleserverid[64] = "";
+
+#if (MIDI_SERIAL_OUTPUT)
+MIDI_CREATE_CUSTOM_INSTANCE(HardwareSerial, Serial2, SerialMidiServer, Serial2MIDISettings);  
+#endif
 
 CMidiSequencer::CMidiSequencer (uint32_t size)
 {
     m_playingnotes.resize (size);
     
+}
+static uint8_t cnt = 0;
+void CMidiSequencer::Init (uint32_t chipId)
+{
+  
+
+  // start BLE Midi server
+  #if (MIDI_BLE_OUTPUT)
+  snprintf(bleserverid, sizeof(bleserverid), "CCLab%d_%08x MIDI device", cnt, chipId); // build BLE Midi name
+  BLEMidiServer.begin(bleserverid);                          // initialize bluetooth midi
+  cnt++;
+  #endif
+
+  // start Midi Serial server
+  #if (MIDI_SERIAL_OUTPUT)
+  SerialMidiServer.begin(MIDI_CHANNEL_OMNI);
+ 
+  #endif
 }
 
 void CMidiSequencer::Play (uint32_t time, MIDImessage* midi)
@@ -76,13 +114,30 @@ void CMidiSequencer::midiSerial(int type, int channel, int data1, int data2)
     switch (type)
     {
       case 128: // note off
+        
+        #if (MIDI_BLE_OUTPUT)
         BLEMidiServer.noteOff(channel -1, data1, data2);
+        #endif
+        #if (MIDI_SERIAL_OUTPUT)
+        SerialMidiServer.sendNoteOff(data1, data2, channel);
+        #endif
         break;
       case 144: // note on
+        
+        #if (MIDI_BLE_OUTPUT)
         BLEMidiServer.noteOn(channel -1, data1, data2);
+        #endif
+        #if (MIDI_SERIAL_OUTPUT)
+        SerialMidiServer.sendNoteOn(data1, data2, channel);
+        #endif
       break;
       case 176: // change note
+        #if (MIDI_BLE_OUTPUT)
         BLEMidiServer.controlChange(channel-1, data1, data2);
+        #endif
+        #if (MIDI_SERIAL_OUTPUT)
+        SerialMidiServer.sendControlChange(data1, data2, channel);
+        #endif
       break;
     }
 }

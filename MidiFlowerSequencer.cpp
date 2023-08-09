@@ -1,3 +1,5 @@
+
+
 /*
  MIT License
 
@@ -27,11 +29,16 @@ This project is based on https://github.com/electricityforprogress/MIDIsprout gr
 work about biodata sonification
 */
 
+
+#include "board.h"
 #include "MidiFlowerSequencer.h"
+#include "midinote.h"
 #include "webserver_config.h"
 #include "flower_music.h"
 
+
 #define MIN_TIME_MS_BETWEEN_NOTE   (5)
+
 
 void CMidiFlowerSequencer::Loop(void)
 {

@@ -28,65 +28,53 @@ work about biodata sonification
 */
 
 #include <Arduino.h>
-#include <BLEMidi.h>
 
 #include "board.h"
+
 #include "midinote.h"
 #include "flower_music.h"
 #include "sequence.h"
 #include "flower_sensor.h"
+#include "MidiFlowerSequencer.h"
 #include "wifiap.h"
 #include "config.h"
 
 #define NBNOTE_FOR_BETTER_MEASURE   15
 
-
-
-
+static uint32_t chipId = 0;
 
 // get the sequencer from flower_music
 extern CMidiFlowerSequencer sequencer;  
 
 
-
-
-static uint32_t chipId = 0;
-static char bleserverid[64] = "";
-
-
 void flowersensor_measure (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
 
 // microcontroleur initialisation
+
 void setup()
 {
-
-  // get esp32 serial
+  // initialize led output
+  pinMode(LED, OUTPUT);
+	digitalWrite(LED, LED_ON); // set led ON
+	
   for (int i = 0; i < 17; i = i + 8)
   {
     chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
   }
 
-  // initialize led output
-  
-	//pinMode(LED, OUTPUT);
-	//digitalWrite(LED, LED_ON); // set led ON
-	
-  // start BLE Midi server
-  sprintf(bleserverid, "BioData_%08lx MIDI device", chipId); // build BLE Midi name
-  BLEMidiServer.begin(bleserverid);                          // initialize bluetooth midi
-  
-
   // start Serial if you want to debug
-  Serial.begin(115200);                 //initialize Serial for debug
+  //Serial.begin(115200);                 //initialize Serial for debug
 
   config_init ();
 
+  sequencer.Init (chipId);
+  
   // start wifi Access Point
   wifiap_init (chipId);
   
   // start web server
   webserver_config_init ();
-
+  
   // start music sequencer
   flower_music_init ();
   
@@ -142,8 +130,3 @@ void flowersensor_measure (uint32_t min, uint32_t max, uint32_t averg, uint32_t 
     // give all the measure to flower music generation code
     BuildNoteFromMeasure (millis(), min, max, averg, delta, stdevi, stdevical);
 }
-
-
-
-
-
