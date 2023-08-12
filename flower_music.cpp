@@ -164,32 +164,32 @@ void setNote(uint32_t currentMillis, int value, int velocity, int duration, int 
 
 void ControlMusic (void)
 {
-  // fade off music when the is no measure
+  // fade off music when there is no measure
   uint32_t currentMillis =  millis ();  // get time in ms
 
-  if (currentMillis - last_sample_check >= 5000)
+  if (currentMillis - last_sample_check > 500)
   {
     uint32_t last_samples = flower_sensor_get_last_sample_time_ms ();   // get last mesure time
     std::vector<CSequence *>& psequences = sequencer.get_tracks ();     // get tracks
 
-    if (currentMillis - last_samples > 5000)
+    if (currentMillis - last_samples > 1000)
     {
-        //no measure for 15s 
+        //no measure for 1s 
         
         psequences[2]->mute (80);   // track3 volume at 80%
         psequences[3]->clear ();    // clear track 4
     }
-    if (currentMillis - last_samples > 10000)
+    if (currentMillis - last_samples > 1500)
     {
-        //no measure for 30s 
+        //no measure for 1,5s 
         psequences[0]->mute (75);   // track1 volume at 75%
         psequences[1]->clear ();    // clear track
         psequences[2]->clear ();    // clear track
         psequences[3]->clear ();    // clear track
     }
-    if (currentMillis - last_samples > 20000)
+    if (currentMillis - last_samples > 2000)
     {
-        //no measure for 60s 
+        //no measure for 2s 
         psequences[0]->clear ();    // clear track
     }
 

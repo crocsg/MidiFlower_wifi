@@ -33,8 +33,8 @@
 struct Serial2MIDISettings : public midi::DefaultSettings
 {
   static const long BaudRate = 31250;
-  static const int8_t RxPin  = PIN_RX_MIDI;
-  static const int8_t TxPin  = PIN_TX_MIDI;
+  //static const int8_t RxPin  = PIN_RX_MIDI;
+  //static const int8_t TxPin  = PIN_TX_MIDI;
 };
 #endif
 
@@ -50,22 +50,22 @@ CMidiSequencer::CMidiSequencer (uint32_t size)
     m_playingnotes.resize (size);
     
 }
-static uint8_t cnt = 0;
+
 void CMidiSequencer::Init (uint32_t chipId)
 {
   
 
   // start BLE Midi server
   #if (MIDI_BLE_OUTPUT)
-  snprintf(bleserverid, sizeof(bleserverid), "CCLab%d_%08x MIDI device", cnt, chipId); // build BLE Midi name
+  snprintf(bleserverid, sizeof(bleserverid), "BioData_%08x MIDI device", chipId); // build BLE Midi name
   BLEMidiServer.begin(bleserverid);                          // initialize bluetooth midi
-  cnt++;
+  
   #endif
 
   // start Midi Serial server
   #if (MIDI_SERIAL_OUTPUT)
   SerialMidiServer.begin(MIDI_CHANNEL_OMNI);
- 
+  Serial2.setPins (PIN_RX_MIDI, PIN_TX_MIDI);
   #endif
 }
 

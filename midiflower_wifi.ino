@@ -93,10 +93,12 @@ void setup()
 }
 
 // 
+static uint8_t cnt = 0;
 void loop()
 {
   
-
+  digitalWrite(LED, (++cnt) & 0x01 == 0 ? LED_ON : LED_OFF); // set led ON
+  
   // good music is good rythm. You must call this very often
   // a least one time by 10 millisec
   sequencer.Loop ();

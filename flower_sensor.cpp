@@ -37,7 +37,7 @@ work about biodata sonification
 
 #define DESIRED_EVENT 24
 #define SAMPLESIZE    32
-#define MIN_DELTA     500
+#define MIN_DELTA     750
 
 static flower_sensor_callback_mes _setmes;
 
