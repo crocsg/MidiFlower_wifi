@@ -102,6 +102,8 @@
 #define PIN_TX_MIDI                25
 #define PIN_RX_MIDI                26
 
+#define PIN_NEOPIXEL               12
+#define NB_NEOPIXEL                16
 
 #endif
 
@@ -117,6 +119,8 @@
 
 #define PIN_TX_MIDI                25
 #define PIN_RX_MIDI                26
+
+
 
 
 #endif

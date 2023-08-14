@@ -35,7 +35,7 @@ work about biodata sonification
 #include "midinote.h"
 #include "webserver_config.h"
 #include "flower_music.h"
-
+#include "activity.h"
 
 #define MIN_TIME_MS_BETWEEN_NOTE   (5)
 
@@ -59,6 +59,8 @@ void CMidiFlowerSequencer::Loop(void)
                     //Serial.printf ("play seq=%d milli=%lu\n", m_sequence_index, currentMillis);
                     note.value = scaleNote(note.value, flower_music_get_current_scale(), flower_music_get_current_root ());
                     Play(currentMillis, &note);
+                    //if (m_sequence_index == 0)
+                     // activity_add_history ((note.value & 0x0f) *  16);
                 }
             }
         }

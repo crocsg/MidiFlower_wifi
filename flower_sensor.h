@@ -37,6 +37,7 @@ typedef void(* flower_sensor_callback_mes) (uint32_t min, uint32_t max, uint32_t
 
 void flower_sensor_init (int pin);
 void flower_sensor_set_callback (flower_sensor_callback_mes clbk);
+void flower_sensor_set_callback_light (flower_sensor_callback_mes clbk);
 void flower_sensor_analyzeSample(void);
 uint8_t flower_sensor_data_available (void);
 void flower_sensor_set_analyse_short (uint8_t s);

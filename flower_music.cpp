@@ -31,6 +31,7 @@ work about biodata sonification
 #include "flower_sensor.h"
 #include "sequence.h"
 #include "util.h"
+#include "activity.h"
 
 uint32_t last_sample_check = millis ();
 
@@ -191,6 +192,8 @@ void ControlMusic (void)
     {
         //no measure for 2s 
         psequences[0]->clear ();    // clear track
+        
+        activity_clear (); // clear NEOPIXEL
     }
 
     last_sample_check = currentMillis;

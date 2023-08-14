@@ -28,7 +28,6 @@ work about biodata sonification
 */
 
 #include <Arduino.h>
-
 #include "board.h"
 
 #include "midinote.h"
@@ -38,16 +37,20 @@ work about biodata sonification
 #include "MidiFlowerSequencer.h"
 #include "wifiap.h"
 #include "config.h"
+#include "activity.h"
 
 #define NBNOTE_FOR_BETTER_MEASURE   15
 
 static uint32_t chipId = 0;
+
 
 // get the sequencer from flower_music
 extern CMidiFlowerSequencer sequencer;  
 
 
 void flowersensor_measure (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
+void flowersensor_measure_light (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
+
 
 // microcontroleur initialisation
 
@@ -62,12 +65,21 @@ void setup()
     chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
   }
 
+  
+  
+   
   // start Serial if you want to debug
   //Serial.begin(115200);                 //initialize Serial for debug
 
   config_init ();
 
   sequencer.Init (chipId);
+
+   // start NEOPIXEL
+  #ifdef PIN_NEOPIXEL
+  
+  activity_begin ();
+  #endif 
   
   // start wifi Access Point
   wifiap_init (chipId);
@@ -84,6 +96,7 @@ void setup()
 
   // define a function to get measures
   flower_sensor_set_callback (flowersensor_measure);
+  flower_sensor_set_callback_light (flowersensor_measure_light);
 
   // load config
   config_load ();
@@ -94,6 +107,7 @@ void setup()
 
 // 
 static uint8_t cnt = 0;
+static uint32_t last_activity = 0;
 void loop()
 {
   
@@ -116,7 +130,19 @@ void loop()
   {
     flower_sensor_set_analyse_short(0);
   }
+
+  #ifdef PIN_NEOPIXEL
+  if (millis () - last_activity > 25)
+  {
+    activity_process ();
+    activity_show ();
+    last_activity = millis ();
+  }
+  #endif
 }
+
+static uint32_t lastaverag = 0;
+static uint16_t color = 0;
 
 // Flower sensor measure callback. receive flower measures 
 // min    min value
@@ -127,8 +153,27 @@ void loop()
 // stdevical standard deviation * threshold
 void flowersensor_measure (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
 {
-    //Serial.println ("measures received \n");
-
+    
+    
     // give all the measure to flower music generation code
     BuildNoteFromMeasure (millis(), min, max, averg, delta, stdevi, stdevical);
+
+    
+  
+}
+// Flower sensor measure callback. receive flower measures 
+// min    min value
+// max    max value
+// averg  average
+// delta  max - min
+// stdevi standard deviation
+// stdevical standard deviation * threshold
+void flowersensor_measure_light (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
+{
+    
+
+    #ifdef PIN_NEOPIXEL
+    activity_event (delta%64);
+    #endif 
+  
 }

@@ -39,7 +39,8 @@ work about biodata sonification
 #define SAMPLESIZE    32
 #define MIN_DELTA     750
 
-static flower_sensor_callback_mes _setmes;
+static flower_sensor_callback_mes _setmes = NULL;
+static flower_sensor_callback_mes _setlight = NULL;
 
 static uint8_t      _samplesize = SAMPLESIZE / 2; //set sample array size
 static uint8_t      state;
@@ -93,6 +94,11 @@ uint8_t flower_sensor_data_available (void)
 void flower_sensor_set_callback (flower_sensor_callback_mes clbk)
 {
   _setmes = clbk;
+}
+
+void flower_sensor_set_callback_light (flower_sensor_callback_mes clbk)
+{
+  _setlight = clbk;
 }
 
 void flower_sensor_set_analyse_short (uint8_t s)
@@ -190,6 +196,10 @@ void flower_sensor_analyzeSample(void)
       threshold_evt ++;
     }
 
+    if (_setlight)
+    {
+      _setlight (minim, maxim, averg, delta, stdevi, stdevi * threshold);
+    }
     if (change && _setmes)
     {
       //Serial.printf("%ld %ld %ld %ld %f %f\r\n", minim, maxim, averg, delta, stdevi, stdevi * threshold); 
