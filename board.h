@@ -41,9 +41,9 @@
 
 // change the define accordingly to your configuration
 //#define BOARD_CONFIG    BOARD_LOLIN32
-//#define BOARD_CONFIG    BOARD_VELLEMAN_ESP32
+#define BOARD_CONFIG    BOARD_VELLEMAN_ESP32
 //#define BOARD_CONFIG    BOARD_ESP32_DEVKIT
-#define BOARD_CONFIG    BOARD_DOIT_DEVKIT
+//#define BOARD_CONFIG    BOARD_DOIT_DEVKIT
 //#define BOARD_CONFIG    BOARD_CUSTOM
 
 #if (BOARD_CONFIG == BOARD_LOLIN32)
@@ -67,11 +67,17 @@
 #define LED_OFF LOW
 
 #define FLOWER_SENSOR_PIN          12     // galvanometer input (flower sensor)
-#define MIDI_BLE_OUTPUT             1     // output on Bluetooth Midi
-#define MIDI_SERIAL_OUTPUT          0     // output on Serial Midi
 
-#define PIN_TX_MIDI                -1     // Midi serial TX pin
-#define PIN_RX_MIDI                -1
+#define MIDI_BLE_OUTPUT             1     // output on Bluetooth Midi
+#define MIDI_SERIAL_OUTPUT          1    // output on Serial Midi
+
+#define PIN_TX_MIDI                25
+#define PIN_RX_MIDI                26
+
+#define PIN_NEOPIXEL               33
+#define NB_NEOPIXEL                16
+
+
 
 #endif
 
@@ -97,7 +103,7 @@
 #define FLOWER_SENSOR_PIN          27     // galvanometer input (flower sensor)
 
 #define MIDI_BLE_OUTPUT             1     // output on Bluetooth Midi
-#define MIDI_SERIAL_OUTPUT          1     // output on Serial Midi
+#define MIDI_SERIAL_OUTPUT          0     // output on Serial Midi
 
 #define PIN_TX_MIDI                25
 #define PIN_RX_MIDI                26
