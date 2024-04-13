@@ -115,7 +115,7 @@ public:
     {
         if (track >= m_ptracks.size())
             return;
-        //Serial.printf ("add note chan=%d time=%lu value=%d duration=%d \n", notechannel, time, value, duration);
+        Serial.printf ("add note chan=%d time=%lu value=%d duration=%d \n", notechannel, time, value, duration);
         m_ptracks[track]->addNote (time, value, velocity, duration, ramp, notechannel);
     }
 

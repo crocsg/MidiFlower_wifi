@@ -43,6 +43,7 @@ void            ControlMusic (void);
 void            flower_music_init (void);
 int             flower_music_get_root (void);
 void            flower_music_set_root (int root);
+uint8_t         flower_music_get_loop(void);
 uint32_t        flower_music_get_basebpm (void);
 void            flower_music_set_basebpm (uint32_t bpm);
 void            flower_music_reset (void);

@@ -42,6 +42,7 @@ CSequence::CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t 
     m_bpm_multi = bpmmulti;
     m_bpm = bpm;
     m_tempo = (60 * 1000) /  (m_bpm * m_bpm_multi);
+    m_loop = 0;
     UpdateTempo ();
 }
 
@@ -58,24 +59,28 @@ void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_
     mes.channel = notechannel;
     mes.ramp = ramp;
 
-    size_t pos = (time / m_tempo) % m_size;
+    size_t pos = ((time / m_tempo) + 1) % m_size;
     if (m_seq[pos].velocity == 0)
         m_cntnote++;
     m_seq[pos] = mes;
     //Serial.printf("addNote pos=%d time =%lu size=%d, ch=%d, nbnote=%d tempo=%ld\n", pos, time, m_size, notechannel, m_cntnote, m_tempo);
     
     // delete a note if sequence is full
-    if (m_cntnote > (m_size * m_noteratio ) / 100)
-    {
+    
         for (auto it = m_seq.begin () + pos + 1; it != m_seq.end (); it++)
         {
-            if (it->velocity > 0)
+            if (m_cntnote > (m_size * m_noteratio ) / 100)
             {
-                it->velocity = 0;
-                m_cntnote--;
+                if (it->velocity > 0)
+                {
+                    it->velocity = 0;
+                    m_cntnote--;
+                }
             }
+            else
+                break;
         }
-    }
+    
 }
 
 uint8_t CSequence::play (uint32_t time, MIDImessage* mes)
@@ -100,6 +105,11 @@ uint8_t CSequence::play_seq (uint32_t time, MIDImessage* mes)
     {
         //Serial.printf ("node pos=%d, ch=%d, val=%d, vel=%d\n", pos, m_seq[pos].channel, m_seq[pos].value, m_seq[pos].velocity);
         *mes = m_seq[pos];
+        if (m_loop == 0)
+        {
+            m_seq[pos].velocity = 0;
+            m_cntnote--;
+        }
         return (1);
     }
     return (0);

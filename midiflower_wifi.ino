@@ -69,7 +69,7 @@ void setup()
   
    
   // start Serial if you want to debug
-  //Serial.begin(115200);                 //initialize Serial for debug
+  Serial.begin(115200);                 //initialize Serial for debug
 
   config_init ();
 
@@ -126,7 +126,11 @@ void loop()
   ControlMusic ();
 
   // if we have some music notes, change configuration for better measure
-  if (sequencer.get_track_nbnote(0) > NBNOTE_FOR_BETTER_MEASURE)
+ if (flower_music_get_loop() ==0)
+ {
+    flower_sensor_set_analyse_short(2);
+ }
+ else if (sequencer.get_track_nbnote(0) > NBNOTE_FOR_BETTER_MEASURE )
   {
     flower_sensor_set_analyse_short(0);
   }

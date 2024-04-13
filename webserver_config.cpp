@@ -488,7 +488,16 @@ static String HomePage(void)
             ptr += "</a>\n";
         }
     }
-
+    #if 0
+    ptr += "<h1 id=\"loop\">Loop</h1>\n";
+    ptr += "<a class=\"button button-on\" href=\"#loop\">";
+    ptr += "On";
+    ptr += "</a>\n";
+    ptr += "<a class=\"button button-on\" href=\"/setloop=\";
+    ptr += "Off";
+    ptr += "\">";
+    ptr += "</a>\n";
+    #endif
     // menu
     ptr +="<hr/>";
     ptr += GetNavigationMenu ();

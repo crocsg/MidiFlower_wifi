@@ -89,6 +89,7 @@ const char* scalename[] =
 static uint8_t *scaleSelect = scaleMajor; //initialize scaling
 static uint8_t current_scale = 0;
 static uint16_t root = 4;       //initialize for root
+static uint8_t _loop = 0;       //initialize for loop
 static uint8_t noteMin = 36; //24;   //C1  - keyboard note minimum
 static uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
 
@@ -142,24 +143,44 @@ uint16_t scaleNote(uint16_t note, uint8_t scale[], uint16_t root)
 
 void setNote(uint32_t currentMillis, int value, int velocity, int duration, int ramp)
 {
-    //Serial.printf ("add note time =%lu\n", currentMillis);
-  // if first track is not 33% full add the note to it
-  if (sequencer.get_track_nbnote(0) < sequencer.get_track_maxnote (0) / 2 && sequencer.get_track_mulbpm(0) > 0)
-    sequencer.addNote(0, currentMillis, value, velocity, duration, ramp, 1);
-  // if second track is not full at 33% add the note to it
-  else if (sequencer.get_track_nbnote(1) < sequencer.get_track_maxnote (1) / 2 && sequencer.get_track_mulbpm(1) > 0)
-    sequencer.addNote(1, currentMillis, value, velocity, duration, ramp, 2);
+  if (_loop){
+      //Serial.printf ("add note time =%lu\n", currentMillis);
+    // if first track is not 33% full add the note to it
+    if (sequencer.get_track_nbnote(0) < sequencer.get_track_maxnote (0) / 2 && sequencer.get_track_mulbpm(0) > 0)
+      sequencer.addNote(0, currentMillis, value, velocity, duration, ramp, 1);
+    // if second track is not full at 33% add the note to it
+    else if (sequencer.get_track_nbnote(1) < sequencer.get_track_maxnote (1) / 2 && sequencer.get_track_mulbpm(1) > 0)
+      sequencer.addNote(1, currentMillis, value, velocity, duration, ramp, 2);
+    else
+    {
+      // find a track and add the note
+      uint16_t nbtracks = sequencer.get_nbtracks ();
+      uint16_t seq = (uint16_t)  (currentMillis % nbtracks);
+      for (uint16_t t = seq ; t < seq + nbtracks; t++)
+      {
+        uint16_t track = t % nbtracks;
+        if (sequencer.get_track_mulbpm (track) > 0)
+        {
+          sequencer.addNote(track, currentMillis, value, velocity, duration, ramp,  track + 1);
+          break;
+        }
+      }
+    }
+  }
   else
   {
-    // find a track and add the note
-    uint16_t nbtracks = sequencer.get_nbtracks ();
-    uint16_t seq = (uint16_t)  (currentMillis % nbtracks);
-    for (uint16_t t = seq ; t < seq + nbtracks; t++)
-    {
-      uint16_t track = t % nbtracks;
-      if (sequencer.get_track_mulbpm (track) > 0)
-        sequencer.addNote(track, currentMillis, value, velocity, duration, ramp,  track + 1);
-    }
+      // find a track and add the note
+      uint16_t nbtracks = sequencer.get_nbtracks ();
+      uint16_t seq = (uint16_t)  (currentMillis % nbtracks);
+      for (uint16_t t = seq ; t < seq + nbtracks; t++)
+      {
+        uint16_t track = t % nbtracks;
+        if (sequencer.get_track_mulbpm (track) > 0)
+        {
+          sequencer.addNote(track, currentMillis, value, velocity, duration, ramp,  track + 1);
+          break;
+        }
+      }
   }
 }
 
@@ -168,7 +189,7 @@ void ControlMusic (void)
   // fade off music when there is no measure
   uint32_t currentMillis =  millis ();  // get time in ms
 
-  if (currentMillis - last_sample_check > 500)
+  if (currentMillis - last_sample_check > 500 && _loop !=0)
   {
     uint32_t last_samples = flower_sensor_get_last_sample_time_ms ();   // get last mesure time
     std::vector<CSequence *>& psequences = sequencer.get_tracks ();     // get tracks
@@ -203,6 +224,11 @@ void ControlMusic (void)
 int flower_music_get_root (void)
 {
   return (root);
+}
+
+uint8_t flower_music_get_loop (void)
+{
+  return (_loop);
 }
 
 void    flower_music_set_root (int n)

@@ -77,6 +77,7 @@
 #define PIN_NEOPIXEL               33
 #define NB_NEOPIXEL                16
 
+#define PIN_ADC_THESHOLD           36
 
 
 #endif

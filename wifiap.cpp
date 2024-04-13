@@ -46,7 +46,7 @@ IPAddress subnet_IP(255,255,255,0);
 
 void wifiap_init (uint32_t chipId)
 {
-    snprintf(WIFI_SSID, sizeof(WIFI_SSID), "MidiFlower_%08lx", chipId); // build WIFI access point name
+    snprintf(WIFI_SSID, sizeof(WIFI_SSID), "MidiFlower2_%08lx", chipId); // build WIFI access point name
     WiFi.disconnect();   
     WiFi.mode(WIFI_OFF); 
     WiFi.mode(WIFI_AP);
@@ -54,7 +54,7 @@ void wifiap_init (uint32_t chipId)
     WiFi.softAP(WIFI_SSID, WIFI_PASSWORD);
     
     delay(250);   // a little time to let AP start
-   
+    Serial.printf ("wifi: %s %s\r\n", WIFI_SSID, WIFI_PASSWORD);
 }
 
 IPAddress& wifiap_get_local_ip (void)
