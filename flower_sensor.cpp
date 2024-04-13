@@ -52,7 +52,7 @@ volatile uint32_t   _last_samples = 0;
 static float threshold = 1;  //change threshold multiplier
 static float threshMin =  0.0001; //scaling threshold min
 static float threshMax = 15; //scaling threshold max
-static uint8_t auto_threshold = 0;
+static uint8_t auto_threshold = 1;
 static uint32_t  threshold_last_millis = 0;
 static uint32_t  threshold_evt = 0;
 
@@ -152,6 +152,17 @@ void flower_sensor_build_mes (void)
       flower_sensor_analyzeSample (); // build data
 
   flower_sensor_update_threshold (); // update measure threshold
+}
+
+
+uint8_t flower_sensor_get_auto_threshold (void)
+{
+  return auto_threshold;
+}
+
+void flower_sensor_set_auto_threshold (uint8_t s)
+{
+  auto_threshold = s;
 }
 
 

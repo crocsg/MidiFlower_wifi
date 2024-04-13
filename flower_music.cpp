@@ -104,6 +104,9 @@ void flower_music_init (void)
   sequencer.register_track(&midi_track_3);
   sequencer.register_track(&midi_track_4);
   
+  std::vector<CSequence *>& psequences = sequencer.get_tracks ();     // get tracks
+  for (auto it = psequences.begin(); it != psequences.end (); ++it)   // walk on tracks
+    (*it)->setLoop (_loop);
   
 }
 
@@ -226,6 +229,13 @@ int flower_music_get_root (void)
   return (root);
 }
 
+void flower_music_set_loop(uint8_t loop)
+{
+  _loop = loop;
+  std::vector<CSequence *>& psequences = sequencer.get_tracks ();     // get tracks
+  for (auto it = psequences.begin(); it != psequences.end (); ++it)   // walk on tracks
+    (*it)->setLoop (_loop);           
+}
 uint8_t flower_music_get_loop (void)
 {
   return (_loop);
