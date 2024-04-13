@@ -89,7 +89,7 @@ const char* scalename[] =
 static uint8_t *scaleSelect = scaleMajor; //initialize scaling
 static uint8_t current_scale = 0;
 static uint16_t root = 4;       //initialize for root
-static uint8_t _loop = 0;       //initialize for loop
+static uint8_t _loop = 1;       //initialize for loop
 static uint8_t noteMin = 36; //24;   //C1  - keyboard note minimum
 static uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
 

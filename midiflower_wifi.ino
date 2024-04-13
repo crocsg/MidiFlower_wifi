@@ -69,7 +69,7 @@ void setup()
   
    
   // start Serial if you want to debug
-  Serial.begin(115200);                 //initialize Serial for debug
+  //Serial.begin(115200);                 //initialize Serial for debug
 
   config_init ();
 

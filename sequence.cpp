@@ -42,7 +42,7 @@ CSequence::CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t 
     m_bpm_multi = bpmmulti;
     m_bpm = bpm;
     m_tempo = (60 * 1000) /  (m_bpm * m_bpm_multi);
-    m_loop = 0;
+    m_loop = 1;
     UpdateTempo ();
 }
 

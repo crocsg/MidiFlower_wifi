@@ -117,7 +117,7 @@ float map2float(float x, float in_min, float in_max, float out_min, float out_ma
 void flower_sensor_update_threshold (void)
 {
 
-  if (auto_threshold)
+  if (auto_threshold == 1)
   {
   uint32_t currentMillis = millis ();
   if (currentMillis - threshold_last_millis > 5000)
@@ -138,6 +138,7 @@ void flower_sensor_update_threshold (void)
 
     }
   }
+  
   else
   {
     int val = analogRead (PIN_ADC_THESHOLD);
