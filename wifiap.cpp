@@ -33,7 +33,7 @@ work about biodata sonification
 #define HTTP_PORT   80
 
 
-static char WIFI_SSID[31]= ""; 
+static char WIFI_SSID[63]= ""; 
 static char WIFI_PASSWORD[63] = "12345678";    // i suggest to use a better password
 
 IPAddress local_IP(192,168,163,1);
