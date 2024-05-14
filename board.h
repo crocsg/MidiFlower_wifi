@@ -71,7 +71,7 @@
 #define MIDI_BLE_OUTPUT             1     // output on Bluetooth Midi
 #define MIDI_SERIAL_OUTPUT          0    // output on Serial Midi
 #define NEOPIXEL_ENABLE             0
-#define DMX_ENABLE                  0
+#define DMX_ENABLE                  1
 
 #define PIN_TX_MIDI                25
 #define PIN_RX_MIDI                26
