@@ -61,7 +61,7 @@ void DMX::Initialize(DMXDirection direction)
         .stop_bits = UART_STOP_BITS_2,
         .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
     };
-
+    Serial.println ("uart start");
     uart_param_config(DMX_UART_NUM, &uart_config);
 
     // Set pins for UART
@@ -94,6 +94,7 @@ void DMX::Initialize(DMXDirection direction)
         // create receive task
         xTaskCreatePinnedToCore(DMX::uart_event_task, "uart_event_task", 2048, NULL, 1, NULL, DMX_CORE);
     }
+    
 }
 
 uint8_t DMX::Read(uint16_t channel)
@@ -156,14 +157,37 @@ void DMX::WriteAll(uint8_t * data, uint16_t start, size_t size)
         return;
     }
 #ifndef DMX_IGNORE_THREADSAFETY
+    Serial.println ("Semaphore");
     xSemaphoreTake(sync_dmx, portMAX_DELAY);
+    Serial.println ("Semaphore ok");
 #endif
     memcpy((uint8_t *)dmx_data + start, data, size);
 #ifndef DMX_IGNORE_THREADSAFETY
+    Serial.println ("Semaphore give");
     xSemaphoreGive(sync_dmx);
+    Serial.println ("Semaphore ok");
 #endif
 }
-
+void DMX::WriteAllValue(uint8_t value, uint16_t start, size_t size)
+{
+    // restrict acces to dmx array to valid values
+    if(start < 1 || start > 512 || start + size > 513)
+    {
+        return;
+    }
+#ifndef DMX_IGNORE_THREADSAFETY
+    
+    xSemaphoreTake(sync_dmx, portMAX_DELAY);
+    
+#endif
+    //memcpy((uint8_t *)dmx_data + start, data, size);
+    memset((uint8_t *)dmx_data + start, value, size);
+#ifndef DMX_IGNORE_THREADSAFETY
+    
+    xSemaphoreGive(sync_dmx);
+    
+#endif
+}
 uint8_t DMX::IsHealthy()
 {
     // get timestamp of last received packet
@@ -209,6 +233,7 @@ void DMX::uart_send_task(void*pvParameters)
 #ifndef DMX_IGNORE_THREADSAFETY
         xSemaphoreGive(sync_dmx);
 #endif
+
     }
 }
 

@@ -43,11 +43,13 @@ void activity_dmx_begin (void)
   
   #if DMX_ENABLE
   DMX::Initialize(output);
-  DMX::WriteAll(0, 1, 512);
-  DMX::Write(1, 0);
-  DMX::Write(2, 255);
+  Serial.println ("DMX initialized");
+  DMX::WriteAllValue(0, 1, 512);
+  DMX::Write(1, 9);
+  DMX::Write(2, 0);
   DMX::Write(3, 0);
-  DMX::Write(4, 0);
+  DMX::Write(4, 255);
+  DMX::Write(5, 255);
   #endif
 }
 
@@ -94,23 +96,114 @@ void activity_dmx_show (void)
 {
   
   #if DMX_ENABLE
-  uint32_t rgbw = _strip.ColorHSV(color * 512, 255, 255);
-  //DMX::Write(1, rgbw & 0xff );
-  //DMX::Write(2, (rgbw << 8) & 0xff);
-  //DMX::Write(3, (rgbw << 16) & 0xff);
-  //DMX::Write(4, (rgbw << 24) & 0xff);
-  DMX::Write(1, 0xff );
-  DMX::Write(2, 0xff );
-  DMX::Write(3, 0 );
-  DMX::Write(4, 0 );
-  DMX::Write(5, 0xFF );
-  DMX::Write(6, 0xFF );
+  if (color != 0)
+  {
+    _strip.setBrightness(255);
+    
+    
+    
+    uint32_t rgbw = _strip.ColorHSV(color *255, 255, 255);
+    Serial.print ("DMX ");
+    Serial.print (color);
+    Serial.print (" ");
+    Serial.println (rgbw);
+    DMX::Write(1, 9);
+    DMX::Write(2, 0);
+    DMX::Write(3, 0);
+    DMX::Write(4, 255);
+    DMX::Write(5, rgbw & 0xff );
+    DMX::Write(6, (rgbw >> 8) & 0xff);
+    DMX::Write(7, (rgbw >> 16) & 0xff);
+    DMX::Write(8, 0 );
+
+    DMX::Write(11, 9);
+    DMX::Write(12, 0);
+    DMX::Write(13, 0);
+    DMX::Write(14, 255);
+    DMX::Write(15, rgbw & 0xff );
+    DMX::Write(16, (rgbw >> 8) & 0xff);
+    DMX::Write(17, (rgbw >> 16) & 0xff);
+    DMX::Write(18, 0xff );
+
+    DMX::Write(21, 9);
+    DMX::Write(22, 0);
+    DMX::Write(23, 0);
+    DMX::Write(24, 255);
+    DMX::Write(25, rgbw & 0xff );
+    DMX::Write(26, 0);
+    DMX::Write(27, 0);
+    DMX::Write(28, 0);
+
+    DMX::Write(31, 9);
+    DMX::Write(32, 0);
+    DMX::Write(33, 0);
+    DMX::Write(34, 255);
+    DMX::Write(35, rgbw & 0xff );
+    DMX::Write(36, 0);
+    DMX::Write(37, 0);
+    DMX::Write(38, rgbw & 0xff);
+
+    DMX::Write(41, 9);
+    DMX::Write(42, 0);
+    DMX::Write(43, 0);
+    DMX::Write(44, 255);
+    DMX::Write(45, 0);
+    DMX::Write(46, rgbw & 0xff);
+    DMX::Write(47, 0);
+    DMX::Write(48, 0);
+
+    DMX::Write(51, 9);
+    DMX::Write(52, 0);
+    DMX::Write(53, 0);
+    DMX::Write(54, 255);
+    DMX::Write(55, 0);
+    DMX::Write(56, rgbw & 0xff);
+    DMX::Write(57, 0);
+    DMX::Write(58, rgbw & 0xff);
+
+    DMX::Write(61, 9);
+    DMX::Write(62, 0);
+    DMX::Write(63, 0);
+    DMX::Write(64, 255);
+    DMX::Write(65, rgbw & 0xff );
+    DMX::Write(66, (rgbw >> 8) & 0xff);
+    DMX::Write(67, (rgbw >> 16) & 0xff);
+    DMX::Write(68, 96 );
+
+    DMX::Write(71, 9);
+    DMX::Write(72, 0);
+    DMX::Write(73, 0);
+    DMX::Write(74, 255);
+    DMX::Write(75, 0);
+    DMX::Write(76, 0);
+    DMX::Write(77, rgbw & 0xff);
+    DMX::Write(78, 0);
+
+    DMX::Write(81, 9);
+    DMX::Write(82, 0);
+    DMX::Write(83, 0);
+    DMX::Write(84, 255);
+    DMX::Write(85, 0);
+    DMX::Write(86, 0);
+    DMX::Write(87, rgbw & 0xff);
+    DMX::Write(88, rgbw & 0xff);
+
+    DMX::Write(91, 9);
+    DMX::Write(92, 0);
+    DMX::Write(93, 0);
+    DMX::Write(94, 255);
+    DMX::Write(95, 0);
+    DMX::Write(96, 0);
+    DMX::Write(97, 0);
+    DMX::Write(98, rgbw & 0xff);
+  }
   #endif
 }
 
 void activity_dmx_clear ()
 {
   #if DMX_ENABLE
+  DMX::WriteAllValue(0, 1, 512);
   lastvalue = 0;
   color = 0;
   memset (&_history[0], 0, sizeof(_history));

@@ -32,7 +32,7 @@ work about biodata sonification
 #include "sequence.h"
 #include "util.h"
 #include "activity.h"
-
+#include "activity_dmx.h"
 uint32_t last_sample_check = millis ();
 
 
@@ -218,6 +218,7 @@ void ControlMusic (void)
         psequences[0]->clear ();    // clear track
         
         activity_clear (); // clear NEOPIXEL
+        activity_dmx_clear (); // clear DMX
     }
 
     last_sample_check = currentMillis;

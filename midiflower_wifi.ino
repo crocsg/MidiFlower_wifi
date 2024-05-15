@@ -84,9 +84,7 @@ void setup()
   #endif 
   #endif
 
-  #if DMX_ENABLE
-    activity_dmx_begin ();
-  #endif
+  
   
   
   // start wifi Access Point
@@ -98,6 +96,10 @@ void setup()
   // start music sequencer
   flower_music_init ();
   
+  #if DMX_ENABLE
+    activity_dmx_begin ();
+  #endif
+
   // start flower sensor
   flower_sensor_init(FLOWER_SENSOR_PIN);
   flower_sensor_set_analyse_short(1);
@@ -200,6 +202,6 @@ void flowersensor_measure_light (uint32_t min, uint32_t max, uint32_t averg, uin
     #endif
 
     #if DMX_ENABLE
-      activity_dmx_event (delta%64);  
+      activity_dmx_event (delta%255);  
     #endif
 }

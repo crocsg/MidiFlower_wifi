@@ -41,6 +41,7 @@ class DMX
         static void Write(uint16_t channel, uint8_t value); // writes the dmx value to the buffer
         
         static void WriteAll(uint8_t * data, uint16_t start, size_t size);  // copies the defined channels into the write buffer
+        static void WriteAllValue(uint8_t value, uint16_t start, size_t size);
 
         static uint8_t IsHealthy();                            // returns true, when a valid DMX signal was received within the last 500ms
         
