@@ -106,7 +106,7 @@ void activity_dmx_show (void)
     Serial.print ("DMX ");
     Serial.print (color);
     Serial.print (" ");
-    Serial.println (rgbw);
+    Serial.println (rgbw, HEX);
     DMX::Write(1, 9);
     DMX::Write(2, 0);
     DMX::Write(3, 0);
@@ -207,5 +207,13 @@ void activity_dmx_clear ()
   lastvalue = 0;
   color = 0;
   memset (&_history[0], 0, sizeof(_history));
+   DMX::Write(1, 201);
+    DMX::Write(2, 110);
+    DMX::Write(3, 16);
+    DMX::Write(4, 32);
+    DMX::Write(5, 0 );
+    DMX::Write(6, 0);
+    DMX::Write(7, 0);
+    DMX::Write(8, 0 );
   #endif
 }
