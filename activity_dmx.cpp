@@ -196,6 +196,26 @@ void activity_dmx_show (void)
     DMX::Write(96, 0);
     DMX::Write(97, 0);
     DMX::Write(98, rgbw & 0xff);
+
+      DMX::Write(101, 0xff );
+      DMX::Write(102, rgbw & 0xff );
+      DMX::Write(103, (rgbw >> 8) & 0xff);
+      DMX::Write(104, (rgbw >> 16) & 0xff);
+      DMX::Write(105, 0 );
+      DMX::Write(106, 0 );
+      DMX::Write(107, 0 );
+      DMX::Write(108, 0 );
+      
+
+      DMX::Write(111, 0xff );
+      DMX::Write(112, rgbw & 0xff );
+      DMX::Write(113, (rgbw >> 8) & 0xff);
+      DMX::Write(114, (rgbw >> 16) & 0xff);
+      DMX::Write(115, 0xff );
+      DMX::Write(116, 0 );
+      DMX::Write(117, 0 );
+      DMX::Write(118, 0 );
+
   }
   #endif
 }
