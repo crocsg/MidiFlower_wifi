@@ -103,10 +103,10 @@ void activity_dmx_show (void)
     
     
     uint32_t rgbw = _strip.ColorHSV(color *255, 255, 255);
-    Serial.print ("DMX ");
-    Serial.print (color);
-    Serial.print (" ");
-    Serial.println (rgbw, HEX);
+    //Serial.print ("DMX ");
+    //Serial.print (color);
+    //Serial.print (" ");
+    //Serial.println (rgbw, HEX);
     DMX::Write(1, 9);
     DMX::Write(2, 0);
     DMX::Write(3, 0);
