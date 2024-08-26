@@ -3,22 +3,25 @@
 #include "board.h"
 #include "activity.h"
 
+#if NEOPIXEL_ENABLE
 #ifdef PIN_NEOPIXEL
 
 Adafruit_NeoPixel strip (NB_NEOPIXEL, PIN_NEOPIXEL, NEO_GRB );
 
 
-static uint16_t _history[NB_NEOPIXEL];
+static uint16_t _history[NB_NEOPIXEL *2];
 #endif
-
+#endif
 void activity_begin (void)
 {
+  #if NEOPIXEL_ENABLE
   #ifdef PIN_NEOPIXEL
   strip.begin();
   for (int i = 0; i < NB_NEOPIXEL; i++) {
       strip.setPixelColor(i, 0, 0, 255);
   }
   strip.show();
+  #endif
   #endif
 }
 
@@ -53,16 +56,18 @@ void activity_process (void)
 }
 void activity_add_history (uint8_t value)
 {
+  #if NEOPIXEL_ENABLE
   #ifdef PIN_NEOPIXEL
-  memcpy (&_history[0], &_history[1], sizeof(_history) - 1);
+  memmove (&_history[0], &_history[1], sizeof(_history) - 1);
   _history[sizeof(_history) - 1] = value;
   #endif
-
+  #endif
    
 }
 
 void activity_show (void)
 {
+  #if NEOPIXEL_ENABLE
   #ifdef PIN_NEOPIXEL
   for (int i = 0; i < NB_NEOPIXEL; i++)
   {
@@ -71,13 +76,16 @@ void activity_show (void)
   }
   strip.show ();
   #endif
+  #endif
 }
 
 void activity_clear ()
 {
+  #if NEOPIXEL_ENABLE
   #ifdef PIN_NEOPIXEL
   lastvalue = 0;
   color = 0;
   memset (&_history[0], 0, sizeof(_history));
+  #endif
   #endif
 }

@@ -34,6 +34,7 @@ work about biodata sonification
 
 #include "webserver_config.h"
 #include "flower_music.h"
+#include "flower_sensor.h"
 #include "wifiap.h"
 #include "util.h"
 #include "config.h"
@@ -68,6 +69,8 @@ static void handle_OntestScale();
 static void handle_OnPlay();
 static void handle_OnConfigChannel();
 static void handle_OnsetMin();
+static void handle_OnsetLoop();
+static void handle_OnsetLevel();
 
 static String HomePage(void);
 static String TestPage (void);
@@ -145,6 +148,9 @@ void webserver_config_init(void)
     server.on(UriBraces("/settempo={}"), handle_Onsettempo); // set root page
     server.on(UriBraces("/setscale={}"), handle_Onsetscale); // set scale page
     server.on(UriBraces("/setmin={}"), handle_OnsetMin);    // set Note min
+    server.on(UriBraces("/setloop={}"), handle_OnsetLoop);    // set loop
+
+    server.on(UriBraces("/setlevel={}"), handle_OnsetLevel);    // set loop
 
     server.on(UriBraces("/setmul1={}"), handle_Onsetmul1);   // set time multiplier
     server.on(UriBraces("/setmul2={}"), handle_Onsetmul2);   // set time multiplier
@@ -240,7 +246,26 @@ static void handle_OnsetMin()
 
     server.send(200, "text/html", HomePage());
 }
+static void handle_OnsetLoop()
+{
+    String loop = server.pathArg(0);
+    int newloop = atoi(loop.c_str());
+    flower_music_set_loop(newloop);
+ 
+    config_save ();
 
+    server.send(200, "text/html", HomePage());
+}
+static void handle_OnsetLevel()
+{
+    String level = server.pathArg(0);
+    int newlevel = atoi(level.c_str());
+    flower_sensor_set_auto_threshold(newlevel);
+ 
+    config_save ();
+
+    server.send(200, "text/html", HomePage());
+}
 static void handle_Onsettempo()
 {
     String bpms = server.pathArg(0);
@@ -488,7 +513,47 @@ static String HomePage(void)
             ptr += "</a>\n";
         }
     }
-
+    uint8_t loop = flower_music_get_loop ();
+    ptr += "<h1 id=\"loop\">Loop</h1>\n";
+    if (loop == 0)
+    {
+        ptr += "<a class=\"button button-on\" href=\"#loop\">";
+        ptr += "Loop Off";
+        ptr += "</a>\n";
+        ptr += "<a class=\"button button-off\" href=\"/setloop=1\">";
+        ptr += "Loop On";
+        ptr += "</a>\n";
+    }
+    else
+    {
+        ptr += "<a class=\"button button-off\" href=\"/setloop=0\">";
+        ptr += "Loop Off";
+        ptr += "</a>\n";
+        ptr += "<a class=\"button button-on\" href=\"#loop\">";
+        ptr += "Loop On";
+        ptr += "</a>\n";
+    }
+    uint8_t autot = flower_sensor_get_auto_threshold ();
+    ptr += "<h1 id=\"level\">Level</h1>\n";
+    if (autot == 0)
+    {
+        ptr += "<a class=\"button button-on\" href=\"#level\">";
+        ptr += "Level Manual";
+        ptr += "</a>\n";
+        ptr += "<a class=\"button button-off\" href=\"/setlevel=1\">";
+        ptr += "Level Auto";
+        ptr += "</a>\n";
+    }
+    else
+    {
+        ptr += "<a class=\"button button-off\" href=\"/setlevel=0\">";
+        ptr += "Level Manual";
+        ptr += "</a>\n";
+        ptr += "<a class=\"button button-on\" href=\"#level\">";
+        ptr += "Level Auto";
+        ptr += "</a>\n";
+    }
+    
     // menu
     ptr +="<hr/>";
     ptr += GetNavigationMenu ();

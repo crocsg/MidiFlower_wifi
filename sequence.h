@@ -86,10 +86,22 @@ public:
         return m_bpm_multi;
     }
 
+    uint8_t getLoop()
+    {
+        return (m_loop);
+    }
+    void setLoop(uint8_t loop)
+    {
+        m_loop = loop;
+    }
+
     bool isEnabled ()
     {
         return (m_tempo > 0);
     }
+   
+    
+    
 private:
 
     void UpdateTempo ()
@@ -108,9 +120,6 @@ private:
     
     uint8_t play_seq (uint32_t time, MIDImessage* mes);
     
-
-    
-    
     std::vector<MIDImessage>    m_seq;
     std::vector<uint8_t>        m_melody;
     size_t                      m_size;
@@ -120,6 +129,7 @@ private:
     uint32_t                    m_noteratio;
     uint32_t                    m_lastplay;
     uint32_t                    m_cntnote;
+    uint8_t                     m_loop;
 };
 
 #endif 

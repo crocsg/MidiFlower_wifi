@@ -33,6 +33,7 @@ work about biodata sonification
 #include <SPIFFS.h>
 
 #include "flower_music.h"
+#include "flower_sensor.h"
 #include "MidiFlowerSequencer.h"
 
 #define JSON_MAX_SIZE 1024
@@ -41,6 +42,8 @@ work about biodata sonification
 #define JSON_SCALE_TAG "scale"
 
 #define JSON_ROOT_TAG "root"
+#define JSON_LOOP_TAG "loop"
+#define JSON_LEVEL_TAG "level"
 #define JSON_OCTAVE_START "notemin"
 #define JSON_CHANNEL1_MUL "mul1"
 #define JSON_CHANNEL2_MUL "mul2"
@@ -70,6 +73,8 @@ static void config_set_json (void)
     jdoc[JSON_BPM_TAG] = flower_music_get_basebpm ();
     jdoc[JSON_SCALE_TAG] = flower_music_get_scale ();
     jdoc[JSON_ROOT_TAG] = flower_music_get_current_root ();
+    jdoc[JSON_LOOP_TAG] = flower_music_get_loop ();
+    jdoc[JSON_LEVEL_TAG] = flower_sensor_get_auto_threshold ();
     
     jdoc[JSON_OCTAVE_START] = flower_music_get_note_min ();
 
@@ -106,12 +111,11 @@ static void config_get_json (void)
     Serial.printf ("value json %d\n", get_json_int (JSON_BPM_TAG));
     
     flower_music_set_basebpm (get_json_int (JSON_BPM_TAG));
-        
     flower_music_set_scale (get_json_int (JSON_SCALE_TAG));
-    
     flower_music_set_root (get_json_int (JSON_ROOT_TAG));
-    
     flower_music_set_note_min (get_json_int (JSON_OCTAVE_START));
+    flower_music_set_loop (get_json_int (JSON_LOOP_TAG));
+    flower_sensor_set_auto_threshold (get_json_int (JSON_LEVEL_TAG));
 
     sequencer.set_track_mulbpm(0, get_json_int (JSON_CHANNEL1_MUL));
     sequencer.set_track_mulbpm(1, get_json_int (JSON_CHANNEL2_MUL));

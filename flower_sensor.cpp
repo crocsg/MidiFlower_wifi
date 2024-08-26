@@ -50,9 +50,9 @@ volatile uint32_t   _samples[SAMPLESIZE];
 volatile uint32_t   _last_samples = 0;
 
 static float threshold = 1;  //change threshold multiplier
-static float threshMin =  0.001; //scaling threshold min
+static float threshMin =  0.0001; //scaling threshold min
 static float threshMax = 15; //scaling threshold max
-
+static uint8_t auto_threshold = 1;
 static uint32_t  threshold_last_millis = 0;
 static uint32_t  threshold_evt = 0;
 
@@ -104,13 +104,21 @@ void flower_sensor_set_callback_light (flower_sensor_callback_mes clbk)
 void flower_sensor_set_analyse_short (uint8_t s)
 {
   if (s != 0)
-      _samplesize = SAMPLESIZE / 2;
+      _samplesize = SAMPLESIZE / s;
   else
     _samplesize = SAMPLESIZE;
 }
 
+float map2float(float x, float in_min, float in_max, float out_min, float out_max)
+{
+  return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
+}
+
 void flower_sensor_update_threshold (void)
 {
+
+  if (auto_threshold == 1)
+  {
   uint32_t currentMillis = millis ();
   if (currentMillis - threshold_last_millis > 5000)
   {
@@ -129,6 +137,14 @@ void flower_sensor_update_threshold (void)
       threshold_evt = 0;
 
     }
+  }
+  
+  else
+  {
+    int val = analogRead (PIN_ADC_THESHOLD);
+    threshold = map2float (val, 0, 4095, threshMin, threshMax);
+    //Serial.printf ("threshold %d %f\r\n", val, threshold);
+  }
 }
 
 void flower_sensor_build_mes (void)
@@ -137,6 +153,17 @@ void flower_sensor_build_mes (void)
       flower_sensor_analyzeSample (); // build data
 
   flower_sensor_update_threshold (); // update measure threshold
+}
+
+
+uint8_t flower_sensor_get_auto_threshold (void)
+{
+  return auto_threshold;
+}
+
+void flower_sensor_set_auto_threshold (uint8_t s)
+{
+  auto_threshold = s;
 }
 
 
@@ -156,7 +183,7 @@ void flower_sensor_analyzeSample(void)
   uint8_t change = 0;
 
 
-
+  
    //digitalWrite(LED, ((state) & 0x01) == 0 ? LED_ON : LED_OFF);
   state++;
   if (_sindex >= _samplesize) { //array is full
@@ -202,7 +229,8 @@ void flower_sensor_analyzeSample(void)
     //}
     double tmpstd = (stdevi / _samplesize) - (averg * averg);
     if (tmpstd > 0.0)
-      stdevi = sqrt(stdevi / _samplesize - averg * averg); //calculate stdevu
+      stdevi = sqrt(tmpstd); //calculate stdevu
+
     else stdevi = 1;
     
     // compute std deviation
@@ -211,15 +239,13 @@ void flower_sensor_analyzeSample(void)
     { 
       stdevi = 1.0; //min stdevi of 1
     } 
-
     
     #endif
 
-    
     delta = maxim - minim;
 
     
-
+    Serial.printf ("analyze %d %f %ld %f\r\n", _sindex, threshold, delta, (stdevi * threshold));
     //**********perform change detection
     if (delta > (stdevi * threshold) && delta > MIN_DELTA)
     {
