@@ -161,6 +161,7 @@ void flower_sensor_analyzeSample(void)
   state++;
   if (_sindex >= _samplesize) { //array is full
     unsigned long sampanalysis[SAMPLESIZE];
+    #if 0
     for (uint8_t i=0; i < _samplesize; i++){
       //skip first element in the array
       sampanalysis[i] = _samples[i];  //load analysis table (due to volitle)
@@ -184,7 +185,37 @@ void flower_sensor_analyzeSample(void)
     } 
 
     stdevi = sqrt(stdevi); //calculate stdevi
+    #else
+    for (uint8_t i=0; i < _samplesize; i++){
+      //skip first element in the array
+      sampanalysis[i] = _samples[i];  //load analysis table (due to volitle)
+      //manual calculation
+      if(sampanalysis[i] > maxim) { maxim = sampanalysis[i]; }
+      if(sampanalysis[i] < minim) { minim = sampanalysis[i]; }
+      averg += sampanalysis[i];
+      stdevi += sampanalysis[i] * sampanalysis[i];
+    }
+    averg = averg / (_samplesize);
+    //for (uint8_t i = 0; i < _samplesize; i++)
+    //{
+    //  stdevi += (sampanalysis[i] - averg) * (sampanalysis[i] - averg) ;  //prep stdevi
+    //}
+    double tmpstd = (stdevi / _samplesize) - (averg * averg);
+    if (tmpstd > 0.0)
+      stdevi = sqrt(stdevi / _samplesize - averg * averg); //calculate stdevu
+    else stdevi = 1;
+    
+    // compute std deviation
+    //stdevi = stdevi / (_samplesize);
+    if (stdevi < 1) 
+    { 
+      stdevi = 1.0; //min stdevi of 1
+    } 
 
+    
+    #endif
+
+    
     delta = maxim - minim;
 
     
