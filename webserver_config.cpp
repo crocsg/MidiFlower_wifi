@@ -140,6 +140,10 @@ static const uint16_t notemul[] =
 
 void webserver_config_init(void)
 {
+    // for captive portal
+    dnsServer.start(DNS_PORT, "*", wifiap_get_local_ip());
+
+    // webserver
     server.on("/", handle_OnHome);                           // home page
     server.on(UriBraces("/setroot={}"), handle_Onsetroot);   // set root page
     server.on(UriBraces("/settempo={}"), handle_Onsettempo); // set root page
@@ -165,8 +169,7 @@ void webserver_config_init(void)
     server.onNotFound(handle_NotFound);                      // handle 404 error
     server.begin();
 
-    // for captive portal
-    dnsServer.start(DNS_PORT, "*", wifiap_get_local_ip());
+    
 }
 
 void webserver_handle_event(void)
@@ -360,7 +363,8 @@ static void handle_OnSetRatio()
 }
 void handle_NotFound()
 {
-    server.send(404, "text/plain", "Hapyness Not found !!! :-(");
+    server.send(200, "text/html", HomePage());
+    //server.send(404, "text/plain", "Hapyness Not found !!! :-(");
 }
 
 static String GetHTMLHeader (void)
