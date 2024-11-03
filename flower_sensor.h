@@ -44,5 +44,6 @@ void flower_sensor_set_analyse_short (uint8_t s);
 void flower_sensor_update_threshold (void);
 uint32_t flower_sensor_get_last_sample_time_ms (void);
 void flower_sensor_build_mes ();
-
+uint8_t flower_sensor_get_auto_threshold (void);
+void flower_sensor_set_auto_threshold (uint8_t s);
 #endif // __FLOWER_SENSOR

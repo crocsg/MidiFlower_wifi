@@ -35,10 +35,14 @@ work about biodata sonification
 #include "sequence.h"
 #include "flower_sensor.h"
 #include "MidiFlowerSequencer.h"
+#include "webserver_config.h"
 #include "wifiap.h"
 #include "config.h"
 #include "activity.h"
 #include "webserver_config.h"
+
+#include "activity_dmx.h"
+
 
 #define NBNOTE_FOR_BETTER_MEASURE   15
 
@@ -77,10 +81,14 @@ void setup()
   sequencer.Init (chipId);
 
    // start NEOPIXEL
+  #if NEO_PIXEL_ENABLE
   #ifdef PIN_NEOPIXEL
-  
-  activity_begin ();
+    activity_begin ();
   #endif 
+  #endif
+
+  
+  
   
   // start wifi Access Point
   wifiap_init (chipId);
@@ -91,6 +99,10 @@ void setup()
   // start music sequencer
   flower_music_init ();
   
+  #if DMX_ENABLE
+    activity_dmx_begin ();
+  #endif
+
   // start flower sensor
   flower_sensor_init(FLOWER_SENSOR_PIN);
   flower_sensor_set_analyse_short(1);
@@ -127,16 +139,30 @@ void loop()
   ControlMusic ();
 
   // if we have some music notes, change configuration for better measure
-  if (sequencer.get_track_nbnote(0) > NBNOTE_FOR_BETTER_MEASURE)
+ if (flower_music_get_loop() ==0)
+ {
+    flower_sensor_set_analyse_short(2);
+ }
+ else if (sequencer.get_track_nbnote(0) > NBNOTE_FOR_BETTER_MEASURE )
   {
     flower_sensor_set_analyse_short(0);
   }
 
+  #if NEOPIXEL_ENABLE
   #ifdef PIN_NEOPIXEL
   if (millis () - last_activity > 25)
   {
     activity_process ();
     activity_show ();
+    last_activity = millis ();
+  }
+  #endif
+  #endif
+  #if DMX_ENABLE
+  if (millis () - last_activity > 25)
+  {
+    activity_dmx_process ();
+    activity_dmx_show ();
     last_activity = millis ();
   }
   #endif
@@ -172,9 +198,13 @@ void flowersensor_measure (uint32_t min, uint32_t max, uint32_t averg, uint32_t 
 void flowersensor_measure_light (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
 {
     
+    #if NEOPIXEL_ENABLE
+      #ifdef PIN_NEOPIXEL
+      activity_event (delta%64);
+      #endif 
+    #endif
 
-    #ifdef PIN_NEOPIXEL
-    activity_event (delta%64);
-    #endif 
-  
+    #if DMX_ENABLE
+      activity_dmx_event (delta%255);  
+    #endif
 }

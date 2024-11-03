@@ -32,7 +32,7 @@ work about biodata sonification
 #include "sequence.h"
 #include "util.h"
 #include "activity.h"
-
+#include "activity_dmx.h"
 uint32_t last_sample_check = millis ();
 
 
@@ -89,6 +89,7 @@ const char* scalename[] =
 static uint8_t *scaleSelect = scaleMajor; //initialize scaling
 static uint8_t current_scale = 0;
 static uint16_t root = 4;       //initialize for root
+static uint8_t _loop = 1;       //initialize for loop
 static uint8_t noteMin = 36; //24;   //C1  - keyboard note minimum
 static uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
 
@@ -103,6 +104,9 @@ void flower_music_init (void)
   sequencer.register_track(&midi_track_3);
   sequencer.register_track(&midi_track_4);
   
+  std::vector<CSequence *>& psequences = sequencer.get_tracks ();     // get tracks
+  for (auto it = psequences.begin(); it != psequences.end (); ++it)   // walk on tracks
+    (*it)->setLoop (_loop);
   
 }
 
@@ -142,24 +146,44 @@ uint16_t scaleNote(uint16_t note, uint8_t scale[], uint16_t root)
 
 void setNote(uint32_t currentMillis, int value, int velocity, int duration, int ramp)
 {
-    //Serial.printf ("add note time =%lu\n", currentMillis);
-  // if first track is not 33% full add the note to it
-  if (sequencer.get_track_nbnote(0) < sequencer.get_track_maxnote (0) / 2 && sequencer.get_track_mulbpm(0) > 0)
-    sequencer.addNote(0, currentMillis, value, velocity, duration, ramp, 1);
-  // if second track is not full at 33% add the note to it
-  else if (sequencer.get_track_nbnote(1) < sequencer.get_track_maxnote (1) / 2 && sequencer.get_track_mulbpm(1) > 0)
-    sequencer.addNote(1, currentMillis, value, velocity, duration, ramp, 2);
+  if (_loop){
+      //Serial.printf ("add note time =%lu\n", currentMillis);
+    // if first track is not 33% full add the note to it
+    if (sequencer.get_track_nbnote(0) < sequencer.get_track_maxnote (0) / 2 && sequencer.get_track_mulbpm(0) > 0)
+      sequencer.addNote(0, currentMillis, value, velocity, duration, ramp, 1);
+    // if second track is not full at 33% add the note to it
+    else if (sequencer.get_track_nbnote(1) < sequencer.get_track_maxnote (1) / 2 && sequencer.get_track_mulbpm(1) > 0)
+      sequencer.addNote(1, currentMillis, value, velocity, duration, ramp, 2);
+    else
+    {
+      // find a track and add the note
+      uint16_t nbtracks = sequencer.get_nbtracks ();
+      uint16_t seq = (uint16_t)  (currentMillis % nbtracks);
+      for (uint16_t t = seq ; t < seq + nbtracks; t++)
+      {
+        uint16_t track = t % nbtracks;
+        if (sequencer.get_track_mulbpm (track) > 0)
+        {
+          sequencer.addNote(track, currentMillis, value, velocity, duration, ramp,  track + 1);
+          break;
+        }
+      }
+    }
+  }
   else
   {
-    // find a track and add the note
-    uint16_t nbtracks = sequencer.get_nbtracks ();
-    uint16_t seq = (uint16_t)  (currentMillis % nbtracks);
-    for (uint16_t t = seq ; t < seq + nbtracks; t++)
-    {
-      uint16_t track = t % nbtracks;
-      if (sequencer.get_track_mulbpm (track) > 0)
-        sequencer.addNote(track, currentMillis, value, velocity, duration, ramp,  track + 1);
-    }
+      // find a track and add the note
+      uint16_t nbtracks = sequencer.get_nbtracks ();
+      uint16_t seq = (uint16_t)  (currentMillis % nbtracks);
+      for (uint16_t t = seq ; t < seq + nbtracks; t++)
+      {
+        uint16_t track = t % nbtracks;
+        if (sequencer.get_track_mulbpm (track) > 0)
+        {
+          sequencer.addNote(track, currentMillis, value, velocity, duration, ramp,  track + 1);
+          break;
+        }
+      }
   }
 }
 
@@ -168,7 +192,7 @@ void ControlMusic (void)
   // fade off music when there is no measure
   uint32_t currentMillis =  millis ();  // get time in ms
 
-  if (currentMillis - last_sample_check > 500)
+  if (currentMillis - last_sample_check > 500 && _loop !=0)
   {
     uint32_t last_samples = flower_sensor_get_last_sample_time_ms ();   // get last mesure time
     std::vector<CSequence *>& psequences = sequencer.get_tracks ();     // get tracks
@@ -194,6 +218,7 @@ void ControlMusic (void)
         psequences[0]->clear ();    // clear track
         
         activity_clear (); // clear NEOPIXEL
+        activity_dmx_clear (); // clear DMX
     }
 
     last_sample_check = currentMillis;
@@ -203,6 +228,18 @@ void ControlMusic (void)
 int flower_music_get_root (void)
 {
   return (root);
+}
+
+void flower_music_set_loop(uint8_t loop)
+{
+  _loop = loop;
+  std::vector<CSequence *>& psequences = sequencer.get_tracks ();     // get tracks
+  for (auto it = psequences.begin(); it != psequences.end (); ++it)   // walk on tracks
+    (*it)->setLoop (_loop);           
+}
+uint8_t flower_music_get_loop (void)
+{
+  return (_loop);
 }
 
 void    flower_music_set_root (int n)

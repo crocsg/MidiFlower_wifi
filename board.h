@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 S Godin (Climate Change Lab)
+ * Copyright (c) 2024 S Godin (Climate Change Lab)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -69,14 +69,23 @@
 #define FLOWER_SENSOR_PIN          12     // galvanometer input (flower sensor)
 
 #define MIDI_BLE_OUTPUT             1     // output on Bluetooth Midi
-#define MIDI_SERIAL_OUTPUT          1    // output on Serial Midi
+#define MIDI_SERIAL_OUTPUT          0    // output on Serial Midi
+#define NEOPIXEL_ENABLE             0
+#define DMX_ENABLE                  1
 
 #define PIN_TX_MIDI                25
 #define PIN_RX_MIDI                26
 
+#define DMX_TX                     GPIO_NUM_25
+#define DMX_RX                     GPIO_NUM_26
+#define DMX_SELECT_REDE            GPIO_NUM_27
+#define DMX_UART                   UART_NUM_2
+
 #define PIN_NEOPIXEL               33
+#define PIN_DISABLED_NEOPIXEL      33
 #define NB_NEOPIXEL                16
 
+#define PIN_ADC_THESHOLD           36
 
 
 #endif
