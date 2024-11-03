@@ -39,9 +39,10 @@ work about biodata sonification
 #include "wifiap.h"
 #include "config.h"
 #include "activity.h"
-#include "webserver_config.h"
-
 #include "activity_dmx.h"
+
+
+
 
 
 #define NBNOTE_FOR_BETTER_MEASURE   15
@@ -110,7 +111,7 @@ void setup()
   // define a function to get measures
   flower_sensor_set_callback (flowersensor_measure);
   flower_sensor_set_callback_light (flowersensor_measure_light);
-
+  
   // load config
   config_load ();
   

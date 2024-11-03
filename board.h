@@ -41,9 +41,9 @@
 
 // change the define accordingly to your configuration
 //#define BOARD_CONFIG    BOARD_LOLIN32
-#define BOARD_CONFIG    BOARD_VELLEMAN_ESP32
+//#define BOARD_CONFIG    BOARD_VELLEMAN_ESP32
 //#define BOARD_CONFIG    BOARD_ESP32_DEVKIT
-//#define BOARD_CONFIG    BOARD_DOIT_DEVKIT
+#define BOARD_CONFIG    BOARD_DOIT_DEVKIT
 //#define BOARD_CONFIG    BOARD_CUSTOM
 
 #if (BOARD_CONFIG == BOARD_LOLIN32)
@@ -113,12 +113,21 @@
 
 #define MIDI_BLE_OUTPUT             1     // output on Bluetooth Midi
 #define MIDI_SERIAL_OUTPUT          0     // output on Serial Midi
+#define NEOPIXEL_ENABLE             1
+#define DMX_ENABLE                  0
 
 #define PIN_TX_MIDI                25
 #define PIN_RX_MIDI                26
 
+#define DMX_TX                     GPIO_NUM_25
+#define DMX_RX                     GPIO_NUM_26
+#define DMX_SELECT_REDE            GPIO_NUM_27
+#define DMX_UART                   UART_NUM_2
+
 #define PIN_NEOPIXEL               12
 #define NB_NEOPIXEL                16
+
+#define PIN_ADC_THESHOLD           36
 
 #endif
 

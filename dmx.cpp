@@ -74,7 +74,7 @@ void DMX::Initialize(DMXDirection direction)
     sync_dmx = xSemaphoreCreateMutex();
 
     // set gpio for direction
-    gpio_pad_select_gpio(DMX_SERIAL_IO_PIN);
+    esp_rom_gpio_pad_select_gpio(DMX_SERIAL_IO_PIN);
     gpio_set_direction(DMX_SERIAL_IO_PIN, GPIO_MODE_OUTPUT);
 
     // depending on parameter set gpio for direction change and start rx or tx thread
@@ -218,11 +218,12 @@ void DMX::uart_send_task(void*pvParameters)
         // set line to inverse, creates break signal
         uart_set_line_inverse(DMX_UART_NUM, UART_SIGNAL_TXD_INV);
         // wait break time
-        ets_delay_us(184);
+        //ets_delay_us(184);
+        delayMicroseconds(184);
         // disable break signal
         uart_set_line_inverse(DMX_UART_NUM,  0);
         // wait mark after break
-        ets_delay_us(24);
+        delayMicroseconds(24);
         // write start code
         uart_write_bytes(DMX_UART_NUM, (const char*) &start_code, 1);
 #ifndef DMX_IGNORE_THREADSAFETY
