@@ -38,6 +38,7 @@ work about biodata sonification
 #include "wifiap.h"
 #include "config.h"
 #include "activity.h"
+#include "webserver_config.h"
 
 #define NBNOTE_FOR_BETTER_MEASURE   15
 
