@@ -35,5 +35,6 @@ work about biodata sonification
 
 void wifiap_init (uint32_t chipId);
 IPAddress& wifiap_get_local_ip (void);
+uint8_t wifi_isStationStarted (void);
 
 #endif

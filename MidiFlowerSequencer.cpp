@@ -69,7 +69,7 @@ void CMidiFlowerSequencer::Loop(void)
     else
     {
         Control(currentMillis);
-        webserver_handle_event();
+        
     }
     m_previousMillis = currentMillis; // manage time
 }

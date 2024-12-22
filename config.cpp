@@ -35,6 +35,7 @@ work about biodata sonification
 #include "flower_music.h"
 #include "flower_sensor.h"
 #include "MidiFlowerSequencer.h"
+#include "wifiap.h"
 
 #define JSON_MAX_SIZE 1024
 
@@ -57,6 +58,9 @@ work about biodata sonification
 #define JSON_CHANNEL2_FILL "fill2"
 #define JSON_CHANNEL3_FILL "fill3"
 #define JSON_CHANNEL4_FILL "fill4"
+
+#define JSON_WIFI_STA_SSID "wifi"
+#define JSON_WIFI_STA_PWD "pwd"
 
 #define JSON_CHANNEL_MUL "mul"
 
@@ -93,6 +97,10 @@ static void config_set_json (void)
     jdoc[JSON_CHANNEL3_SIZE] = sequencer.get_track_size (2);
     jdoc[JSON_CHANNEL4_SIZE] = sequencer.get_track_size (3);
     
+    jdoc[JSON_WIFI_STA_SSID] = "";
+    jdoc[JSON_WIFI_STA_PWD] = "";
+
+
     
     
 }
@@ -100,15 +108,15 @@ static void config_set_json (void)
 static int get_json_int (const char* tag)
 {
     int v = jdoc[tag];
-    Serial.printf ("tag=%s =%d\n", tag, v);
+    //printf ("tag=%s =%d\n", tag, v);
     return v;
 }
 static void config_get_json (void)
 {
        
-    int v = jdoc[JSON_BPM_TAG];
-    Serial.printf ("value json %d\n", v);
-    Serial.printf ("value json %d\n", get_json_int (JSON_BPM_TAG));
+    //int v = jdoc[JSON_BPM_TAG];
+    //Serial.printf ("value json %d\n", v);
+    //Serial.printf ("value json %d\n", get_json_int (JSON_BPM_TAG));
     
     flower_music_set_basebpm (get_json_int (JSON_BPM_TAG));
     flower_music_set_scale (get_json_int (JSON_SCALE_TAG));
@@ -145,15 +153,15 @@ void config_save (void)
     
     File file = SPIFFS.open(config_path, FILE_WRITE);
     if (!file) {
-        Serial.println(F("Failed to create file"));
+        //Serial.println(F("Failed to create file"));
         return;
     }
 
     // save config json
     if (serializeJson(jdoc, file) == 0) {
-        Serial.println(F("Failed to write to file"));
+        //Serial.println(F("Failed to write to file"));
     }
-    serializeJson (jdoc, Serial);
+    //serializeJson (jdoc, Serial);
     // Close the file
     file.close();
     
@@ -170,16 +178,16 @@ void config_load (void)
 
     // Deserialize the JSON document
     //jdoc.clear ();
-    Serial.printf ("deserialize\n");
+    //Serial.printf ("deserialize\n");
     DeserializationError error = deserializeJson(jdoc, file);
     if (error)
     {
-        Serial.println(F("Failed to read file, using default configuration"));
+        //Serial.println(F("Failed to read file, using default configuration"));
         file.close ();
         return;
     }  
 
-    Serial.printf ("Read config\n");
+    //Serial.printf ("Read config\n");
     config_get_json ();
     // Close the file (Curiously, File's destructor doesn't close the file)
     file.close();
@@ -189,7 +197,7 @@ void config_init (void)
 {
     // Initialize SD library
   if(!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)){
-      Serial.println("SPIFFS Mount Failed");
+      //Serial.println("SPIFFS Mount Failed");
       return;
    }
 }

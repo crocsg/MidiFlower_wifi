@@ -57,7 +57,7 @@ void CMidiSequencer::Init (uint32_t chipId)
 
   // start BLE Midi server
   #if (MIDI_BLE_OUTPUT)
-  snprintf(bleserverid, sizeof(bleserverid), "BioData_%08x MIDI device", chipId); // build BLE Midi name
+  snprintf(bleserverid, sizeof(bleserverid), "BioData_%08lx MIDI device", chipId); // build BLE Midi name
   BLEMidiServer.begin(bleserverid);                          // initialize bluetooth midi
   
   #endif

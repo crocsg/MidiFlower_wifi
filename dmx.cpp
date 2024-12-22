@@ -29,7 +29,8 @@
 
 #define BUF_SIZE                1024        //  buffer size for rx events
 
-#define DMX_CORE                0           // select the core the rx/tx thread should run on
+#define DMX_PERIOD_MS           25          // period in ms beetween 2 dmx output    
+
 
 //#define DMX_IGNORE_THREADSAFETY 0           // set to 1 to disable all threadsafe mechanisms
 
@@ -56,16 +57,16 @@ void DMX::Initialize(DMXDirection direction)
     uart_config_t uart_config =
     {
         .baud_rate = 250000,
-        .data_bits = UART_DATA_8_BITS,
-        .parity = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_2,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
+        .data_bits =  UART_DATA_8_BITS,
+        .parity =     UART_PARITY_DISABLE,
+        .stop_bits =  UART_STOP_BITS_2,
+        .flow_ctrl =  UART_HW_FLOWCTRL_DISABLE
     };
-    Serial.println ("uart start");
+    
     uart_param_config(DMX_UART_NUM, &uart_config);
 
     // Set pins for UART
-    uart_set_pin(DMX_UART_NUM, DMX_SERIAL_OUTPUT_PIN, DMX_SERIAL_INPUT_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+    uart_set_pin((gpio_num_t) DMX_UART_NUM, (gpio_num_t) DMX_SERIAL_OUTPUT_PIN, (int) DMX_SERIAL_INPUT_PIN, (int) UART_PIN_NO_CHANGE, (int) UART_PIN_NO_CHANGE);
 
     // install queue
     uart_driver_install(DMX_UART_NUM, BUF_SIZE * 2, BUF_SIZE * 2, 20, &dmx_rx_queue, 0);
@@ -75,12 +76,12 @@ void DMX::Initialize(DMXDirection direction)
 
     // set gpio for direction
     esp_rom_gpio_pad_select_gpio(DMX_SERIAL_IO_PIN);
-    gpio_set_direction(DMX_SERIAL_IO_PIN, GPIO_MODE_OUTPUT);
+    gpio_set_direction((gpio_num_t)DMX_SERIAL_IO_PIN, GPIO_MODE_OUTPUT);
 
     // depending on parameter set gpio for direction change and start rx or tx thread
     if(direction == output)
     {
-        gpio_set_level(DMX_SERIAL_IO_PIN, 1);
+        gpio_set_level((gpio_num_t) DMX_SERIAL_IO_PIN, 1);
         dmx_state = DMX_OUTPUT;
         
         // create send task
@@ -88,7 +89,7 @@ void DMX::Initialize(DMXDirection direction)
     }
     else
     {    
-        gpio_set_level(DMX_SERIAL_IO_PIN, 0);
+        gpio_set_level((gpio_num_t) DMX_SERIAL_IO_PIN, 0);
         dmx_state = DMX_IDLE;
 
         // create receive task
@@ -157,15 +158,15 @@ void DMX::WriteAll(uint8_t * data, uint16_t start, size_t size)
         return;
     }
 #ifndef DMX_IGNORE_THREADSAFETY
-    Serial.println ("Semaphore");
+    
     xSemaphoreTake(sync_dmx, portMAX_DELAY);
-    Serial.println ("Semaphore ok");
+    
 #endif
     memcpy((uint8_t *)dmx_data + start, data, size);
 #ifndef DMX_IGNORE_THREADSAFETY
-    Serial.println ("Semaphore give");
+    
     xSemaphoreGive(sync_dmx);
-    Serial.println ("Semaphore ok");
+    
 #endif
 }
 void DMX::WriteAllValue(uint8_t value, uint16_t start, size_t size)
@@ -235,6 +236,8 @@ void DMX::uart_send_task(void*pvParameters)
         xSemaphoreGive(sync_dmx);
 #endif
 
+        // wait a little DMX is not priority
+        vTaskDelay(pdMS_TO_TICKS(DMX_PERIOD_MS));
     }
 }
 

@@ -245,7 +245,7 @@ void flower_sensor_analyzeSample(void)
     delta = maxim - minim;
 
     
-    Serial.printf ("analyze %d %f %ld %f\r\n", _sindex, threshold, delta, (stdevi * threshold));
+    //Serial.printf ("analyze %d %f %ld %f\r\n", _sindex, threshold, delta, (stdevi * threshold));
     //**********perform change detection
     if (delta > (stdevi * threshold) && delta > MIN_DELTA)
     {

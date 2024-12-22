@@ -38,9 +38,13 @@ work about biodata sonification
 #include "wifiap.h"
 #include "util.h"
 #include "config.h"
+#include "board.h"
 
 #define HTTP_PORT 80
 #define DNS_PORT 53
+
+
+static TaskHandle_t http_task_handle = NULL;
 
 WebServer server(HTTP_PORT);
 DNSServer dnsServer;
@@ -141,9 +145,9 @@ static const uint16_t notemul[] =
 
 };
 
-void webserver_config_init(void)
+void webserver_task (void* /*pdata*/)
 {
-    // for captive portal
+// for captive portal
     dnsServer.start(DNS_PORT, "*", wifiap_get_local_ip());
 
     // webserver
@@ -175,6 +179,17 @@ void webserver_config_init(void)
     server.onNotFound(handle_NotFound);                      // handle 404 error
     server.begin();
 
+    while (1) // wtf ! polling event in real time system
+    {
+        vTaskDelay(pdMS_TO_TICKS(1));
+        webserver_handle_event ();
+    }
+}
+
+void webserver_config_init(void)
+{
+    
+    xTaskCreatePinnedToCore(webserver_task, "http_task", 4096, NULL, 1, &http_task_handle, HTTP_CORE);
     
 }
 

@@ -40,7 +40,7 @@ work about biodata sonification
 #include "config.h"
 #include "activity.h"
 #include "activity_dmx.h"
-
+#include "activity_mqtt.h"
 
 
 
@@ -71,11 +71,8 @@ void setup()
     chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
   }
 
-  
-  
-   
   // start Serial if you want to debug
-  //Serial.begin(115200);                 //initialize Serial for debug
+  Serial.begin(115200);                 //initialize Serial for debug
 
   config_init ();
 
@@ -122,10 +119,13 @@ void setup()
 // 
 static uint8_t cnt = 0;
 static uint32_t last_activity = 0;
+static uint32_t last_report = 0;
+static uint8_t mqtt_connected = 0;
+
 void loop()
 {
   
-  digitalWrite(LED, (++cnt) & 0x01 == 0 ? LED_ON : LED_OFF); // set led ON
+  digitalWrite(LED, ((++cnt) & 0x01) == 0 ? LED_ON : LED_OFF); // set led ON
   
   // good music is good rythm. You must call this very often
   // a least one time by 10 millisec
@@ -150,14 +150,25 @@ void loop()
   }
 
   #if NEOPIXEL_ENABLE
-  #ifdef PIN_NEOPIXEL
-  if (millis () - last_activity > 25)
-  {
-    activity_process ();
-    activity_show ();
-    last_activity = millis ();
-  }
-  #endif
+    #ifdef PIN_NEOPIXEL
+    if (millis () - last_activity > 25)
+    {
+      activity_process ();
+      activity_show ();
+
+      if (wifi_isStationStarted())
+      {
+        if (! mqtt_connected)
+        {
+          mqtt_connected = 1;
+          mqtt_init ();
+        }
+        
+      }
+
+      last_activity = millis ();
+    }
+    #endif
   #endif
   #if DMX_ENABLE
   if (millis () - last_activity > 25)
@@ -167,6 +178,15 @@ void loop()
     last_activity = millis ();
   }
   #endif
+  
+  if (millis () - last_report > 5 * 60000)
+  {
+    //Serial.print("Setup: Executing on core ");
+    //Serial.println(xPortGetCoreID());
+    //Serial.print("portTICK_PERIOD_MS ");
+    //Serial.println(portTICK_PERIOD_MS);
+    last_report = millis();
+  }
 }
 
 static uint32_t lastaverag = 0;
@@ -181,14 +201,10 @@ static uint16_t color = 0;
 // stdevical standard deviation * threshold
 void flowersensor_measure (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
 {
-    
-    
     // give all the measure to flower music generation code
-    BuildNoteFromMeasure (millis(), min, max, averg, delta, stdevi, stdevical);
-
-    
-  
+    BuildNoteFromMeasure (millis(), min, max, averg, delta, stdevi, stdevical);  
 }
+
 // Flower sensor measure callback. receive flower measures 
 // min    min value
 // max    max value
@@ -207,5 +223,12 @@ void flowersensor_measure_light (uint32_t min, uint32_t max, uint32_t averg, uin
 
     #if DMX_ENABLE
       activity_dmx_event (delta%255);  
+    #endif
+
+    #if REPORT_DATA_SERIAL
+    static char buf[256];
+    snprintf (buf, sizeof(buf), "min:%d,max:%d,averg:%d,delta:%d,stdevi:%f\n", min, max, averg, delta, stdevi);
+    buf[sizeof(buf)-1] = 0;
+    Serial.println(buf);
     #endif
 }

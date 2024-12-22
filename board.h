@@ -33,6 +33,20 @@
 
 #define SAMPLESIZE  32
 
+// FreeRTOS core feature
+#define MQTT_CORE               0
+#define HTTP_CORE               0
+#define DMX_CORE                0           
+#define SENSOR_CORE             1
+#define WIFI_CORE               0
+
+// feature enable/disable
+#define BOARD_ENABLE_WIFI_STA   1
+#define BOARD_ENABLE_MQTT       1
+#define MQTT_QUEUE_ELM_NBR      64
+#define REPORT_DATA_SERIAL      1
+
+
 #define BOARD_LOLIN32           0
 #define BOARD_VELLEMAN_ESP32    1
 #define BOARD_ESP32_DEVKIT    	2
@@ -119,9 +133,9 @@
 #define PIN_TX_MIDI                25
 #define PIN_RX_MIDI                26
 
-#define DMX_TX                     GPIO_NUM_25
-#define DMX_RX                     GPIO_NUM_26
-#define DMX_SELECT_REDE            GPIO_NUM_27
+#define DMX_TX                     25
+#define DMX_RX                     26
+#define DMX_SELECT_REDE            27
 #define DMX_UART                   UART_NUM_2
 
 #define PIN_NEOPIXEL               12

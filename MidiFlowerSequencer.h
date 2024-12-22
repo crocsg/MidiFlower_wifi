@@ -32,9 +32,10 @@
 class CMidiFlowerSequencer : public CMidiSequencer
 {
 public:
-    CMidiFlowerSequencer (uint32_t size) : CMidiSequencer (size), m_sequence_index(0), m_sequence_time(0)
+    CMidiFlowerSequencer (uint32_t size) : CMidiSequencer (size)
     {
         m_previousMillis = 0;
+        m_sequence_index = 0;
         m_sequence_time = 0;
         m_lock = false;
     }

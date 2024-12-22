@@ -2,6 +2,7 @@
 #include <Adafruit_NeoPixel.h>
 #include "board.h"
 #include "activity.h"
+#include "util.h"
 
 #if NEOPIXEL_ENABLE
 #ifdef PIN_NEOPIXEL
@@ -58,8 +59,8 @@ void activity_add_history (uint8_t value)
 {
   #if NEOPIXEL_ENABLE
   #ifdef PIN_NEOPIXEL
-  memmove (&_history[0], &_history[1], sizeof(_history) - 1);
-  _history[sizeof(_history) - 1] = value;
+  memmove (&_history[0], &_history[1], sizeof(_history) - sizeof(_history[0]));
+  _history[ARRAYLEN(_history)  - 1] = value;
   #endif
   #endif
    
