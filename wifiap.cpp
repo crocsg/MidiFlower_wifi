@@ -46,7 +46,7 @@ IPAddress subnet_IP(255,255,255,0);
 
 void wifiap_init (uint32_t chipId)
 {
-    snprintf(WIFI_SSID, sizeof(WIFI_SSID), "MidiFlower2_%08lx", chipId); // build WIFI access point name
+    snprintf(WIFI_SSID, sizeof(WIFI_SSID), "MidiFlowerDMX_%08lx", chipId); // build WIFI access point name
     WiFi.disconnect();   
     WiFi.mode(WIFI_OFF); 
     WiFi.mode(WIFI_AP);

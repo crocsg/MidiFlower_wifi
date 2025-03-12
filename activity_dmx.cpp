@@ -85,8 +85,8 @@ void activity_dmx_process (void)
 void activity_dmx_add_history (uint8_t value)
 {
   #if DMX_ENABLE
-  memmove (&_history[0], &_history[1], (sizeof(_history) - 1));
-  _history[sizeof(_history) - 1] = value;
+  memmove (&_history[0], &_history[1], (sizeof(_history) - sizeof(_history[0])));
+  _history[(sizeof(_history)/sizeof(_history[0])) - 1] = value;
   #endif
 
    

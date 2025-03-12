@@ -109,12 +109,12 @@
 #define LED                         2     // ESP32 Onboard LED (depends on ESP32 board)
 #define LED_ON  HIGH
 #define LED_OFF LOW
-#define FLOWER_SENSOR_PIN          27     // galvanometer input (flower sensor)
+#define FLOWER_SENSOR_PIN          34     // galvanometer input (flower sensor)
 
 #define MIDI_BLE_OUTPUT             1     // output on Bluetooth Midi
 #define MIDI_SERIAL_OUTPUT          0     // output on Serial Midi
-#define NEOPIXEL_ENABLE             1
-#define DMX_ENABLE                  0
+#define NEOPIXEL_ENABLE             0
+#define DMX_ENABLE                  1
 
 #define PIN_TX_MIDI                25
 #define PIN_RX_MIDI                26
@@ -125,6 +125,7 @@
 #define DMX_UART                   UART_NUM_2
 
 #define PIN_NEOPIXEL               12
+#define PIN_DISABLED_NEOPIXEL      12
 #define NB_NEOPIXEL                16
 
 #define PIN_ADC_THESHOLD           36

@@ -75,7 +75,7 @@ void setup()
   
    
   // start Serial if you want to debug
-  //Serial.begin(115200);                 //initialize Serial for debug
+  Serial.begin(115200);                 //initialize Serial for debug
 
   config_init ();
 
@@ -124,9 +124,10 @@ static uint8_t cnt = 0;
 static uint32_t last_activity = 0;
 void loop()
 {
-  
-  digitalWrite(LED, (++cnt) & 0x01 == 0 ? LED_ON : LED_OFF); // set led ON
-  
+  if (millis () - flower_sensor_get_last_sample_time_ms() < 3000)
+    digitalWrite(LED, ((++cnt) & 0x01) == 0 ? LED_ON : LED_OFF); // set led ON
+  else
+    digitalWrite(LED, LED_OFF); // set led ON
   // good music is good rythm. You must call this very often
   // a least one time by 10 millisec
   sequencer.Loop ();
